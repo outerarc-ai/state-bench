@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling>=1.26,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "state-bench"
+version = "0.1.0.dev0"
+description = "Trace-driven evaluation of recurrent-state and KV caching for agentic LLM serving"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+authors = [{ name = "OuterArc AI" }]
+keywords = ["llm", "inference", "kv-cache", "prefix-caching", "mamba", "benchmark"]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: System :: Benchmark",
+]
+dependencies = ["jsonschema>=4.18,<5"]
+
+[project.scripts]
+state-bench = "state_bench.cli:main"
+
+[project.urls]
+Repository = "https://github.com/outerarc-ai/state-bench"
+Documentation = "https://github.com/outerarc-ai/state-bench/tree/main/docs"
+Issues = "https://github.com/outerarc-ai/state-bench/issues"
+
+[dependency-groups]
+dev = ["pytest>=8.3,<10", "pytest-cov>=6,<8", "ruff>=0.11,<1"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/state_bench"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.coverage.run]
+source = ["state_bench"]
+branch = true
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "RUF"]
+ignore = ["E501"]

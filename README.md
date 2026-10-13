@@ -1,0 +1,67 @@
+# state-bench: trace-driven evaluation of state caching for agentic LLM serving
+
+[![CI](https://github.com/outerarc-ai/state-bench/actions/workflows/ci.yml/badge.svg)](https://github.com/outerarc-ai/state-bench/actions/workflows/ci.yml)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](pyproject.toml)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+
+[简体中文](README.zh-CN.md) · [Documentation](docs/README.md) · [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md)
+
+state-bench studies how LLM inference engines reuse cached state across requests in agentic workloads. Hybrid models such as Qwen3.5 and Nemotron-H keep a recurrent (Mamba/GDN) state alongside the attention KV cache, and a prefix can be resumed only where a state snapshot exists. Where engines place, keep, and evict those snapshots decides how much of a long agent session is recomputed.
+
+The project provides a content-free trace format for agent sessions, a deterministic synthetic trace generator, and documentation of current engine behavior. A checkpoint placement simulator and a paired replay harness for OpenAI-compatible servers are in development. Measurements target AMD Instinct GPUs with ROCm; the trace tooling runs on any CPU.
+
+## What it provides
+
+- **Content-free traces.** Requests are recorded as chained 64-token block hashes, message boundaries, and timing. Prefix reuse is preserved without storing prompts, so recorded sessions can be shared.
+- **Reproducible synthetic sessions.** Append, fork, retry, and rewrite patterns are generated from a seed. The same parameters produce byte-identical files, and every parameter is labeled as an assumption.
+- **Machine-checkable artifacts.** Traces are validated against a versioned JSON Schema and cross-record rules. Every command is deterministic, returns a meaningful exit code, and emits JSON where output is meant to be consumed by other tools.
+- **Documented engine behavior.** [SGLang Mamba checkpoints](docs/SGLANG_MAMBA_CHECKPOINTS.md) describes where SGLang currently places, inserts, and evicts recurrent-state checkpoints, with source references.
+
+Synthetic traces exercise policies; they do not measure them. Performance results will be reported only from controlled runs on real hardware, following the [measurement protocol](docs/MEASUREMENT.md).
+
+## Install
+
+Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/):
+
+```sh
+git clone https://github.com/outerarc-ai/state-bench.git
+cd state-bench
+uv sync --locked --group dev
+uv run state-bench --help
+```
+
+## Quick start
+
+```sh
+uv run state-bench synth --preset mixed --sessions 8 --seed 0 -o mixed.jsonl
+uv run state-bench validate mixed.jsonl
+uv run state-bench stats mixed.jsonl
+uv run state-bench schema > trace.schema.json
+```
+
+`stats` reports the share of input tokens that an ideal cache keeping every parent request could reuse. It is an upper bound derived from the trace, not a measurement of any engine.
+
+## Status
+
+| Component | Status |
+| --- | --- |
+| Trace format v0.1 and validation | Available |
+| Synthetic generator (append, fork, retry, rewrite) | Available |
+| SGLang checkpoint behavior notes | Available, read at SGLang `166b4ae7f` |
+| Importers for public agent traces | Planned, pending license review of each dataset |
+| Recording proxy for local agent sessions | Planned |
+| Checkpoint placement simulator | In development |
+| Paired replay and statistics against live servers | Planned |
+
+## Documentation
+
+| Guide | Contents |
+| --- | --- |
+| [Overview](docs/README.md) | Documentation index |
+| [Trace format](docs/TRACE_FORMAT.md) | Records, fields, hashing, and validation rules |
+| [Synthetic traces](docs/SYNTHETIC_TRACES.md) | Patterns, parameters, and limits of synthetic data |
+| [Measurement protocol](docs/MEASUREMENT.md) | How results are produced, labeled, and reported |
+| [SGLang Mamba checkpoints](docs/SGLANG_MAMBA_CHECKPOINTS.md) | Current placement, insertion, and eviction rules |
+| [Related work](docs/RELATED_WORK.md) | Upstream discussions and implementations this project builds on |
+
+Issues and pull requests are welcome. See [Contributing](CONTRIBUTING.md) for setup and review expectations. state-bench is released under the [Apache License 2.0](LICENSE).

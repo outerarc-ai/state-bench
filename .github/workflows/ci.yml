@@ -1,0 +1,29 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python }}
+      - run: uv sync --locked --group dev
+      - run: uv run --no-sync ruff check .
+      - run: uv run --no-sync ruff format --check .
+      - run: uv run --no-sync pytest --cov=state_bench --cov-fail-under=90 --cov-report=term-missing
+      - name: CLI round trip
+        run: |
+          uv run --no-sync state-bench synth --preset mixed --sessions 16 --seed 0 -o "$RUNNER_TEMP/mixed.jsonl"
+          uv run --no-sync state-bench validate "$RUNNER_TEMP/mixed.jsonl"
+          uv run --no-sync state-bench stats "$RUNNER_TEMP/mixed.jsonl"
+      - run: uv build
