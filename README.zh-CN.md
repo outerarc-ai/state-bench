@@ -50,7 +50,7 @@ uv run state-bench schema > trace.schema.json
 | 轨迹格式 v0.1 与校验 | 可用 |
 | 合成生成器（追加、分叉、重试、改写） | 可用 |
 | SGLang 快照行为说明 | 可用，基于 SGLang `166b4ae7f` |
-| 公开 agent 轨迹导入 | 计划中，逐个数据集核实许可证后接入 |
+| 公开 agent 轨迹导入 | 许可证与字段已核实（[公开 agent 轨迹](docs/PUBLIC_TRACES.md)），导入器开发中 |
 | 本地 agent 会话录制代理 | 计划中 |
 | 快照放置仿真器 | 可用（v0：串行、KV 容量不限） |
 | 策略：SGLang 现状及 DCP 掩码、prompt 末尾锚点、Marconi 式准入、保留近期快照、离线参考 | 可用 |
@@ -63,6 +63,7 @@ uv run state-bench schema > trace.schema.json
 | --- | --- |
 | [总览](docs/README.md) | 文档索引 |
 | [轨迹格式](docs/TRACE_FORMAT.md) | 记录类型、字段、哈希与校验规则 |
+| [公开 agent 轨迹](docs/PUBLIC_TRACES.md) | 公开轨迹数据集的许可证、字段与局限 |
 | [合成轨迹](docs/SYNTHETIC_TRACES.md) | 模式、参数与合成数据的局限 |
 | [测量规范](docs/MEASUREMENT.md) | 结果如何产生、标注与报告 |
 | [快照放置仿真器](docs/SIMULATOR.md) | 模型、参数、输出与局限 |

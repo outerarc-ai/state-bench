@@ -50,7 +50,7 @@ uv run state-bench schema > trace.schema.json
 | Trace format v0.1 and validation | Available |
 | Synthetic generator (append, fork, retry, rewrite) | Available |
 | SGLang checkpoint behavior notes | Available, read at SGLang `166b4ae7f` |
-| Importers for public agent traces | Planned, pending license review of each dataset |
+| Importers for public agent traces | Licenses and fields verified ([Public agent traces](docs/PUBLIC_TRACES.md)); importer in development |
 | Recording proxy for local agent sessions | Planned |
 | Snapshot placement simulator | Available (v0: sequential, unlimited KV) |
 | Policies: SGLang current and DCP mask, prompt-end anchor, Marconi-style admission, recent-checkpoint retention, offline reference | Available |
@@ -63,6 +63,7 @@ uv run state-bench schema > trace.schema.json
 | --- | --- |
 | [Overview](docs/README.md) | Documentation index |
 | [Trace format](docs/TRACE_FORMAT.md) | Records, fields, hashing, and validation rules |
+| [Public agent traces](docs/PUBLIC_TRACES.md) | Licenses, fields, and limits of public trace corpora |
 | [Synthetic traces](docs/SYNTHETIC_TRACES.md) | Patterns, parameters, and limits of synthetic data |
 | [Measurement protocol](docs/MEASUREMENT.md) | How results are produced, labeled, and reported |
 | [Snapshot placement simulator](docs/SIMULATOR.md) | Model, options, output, and limits |

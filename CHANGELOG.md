@@ -11,6 +11,8 @@
   (`results/2026-10-13-sim-donation-mask`).
 - Simulated policy comparison on held-out synthetic traces
   (`results/2026-10-13-sim-policy-comparison`).
+- License and field review of the kv-cache-tester and AgentX v1.0 trace corpora
+  (`docs/PUBLIC_TRACES.md`).
 - Trace format 0.1: JSONL records with chained 64-token block hashes, message boundaries,
   and timing; JSON Schema and cross-record validation.
 - Synthetic generator with append, fork, retry, and rewrite patterns and presets.
