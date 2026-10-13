@@ -15,7 +15,7 @@ The project provides a content-free trace format for agent sessions, a determini
 - **Content-free traces.** Requests are recorded as chained 64-token block hashes, message boundaries, and timing. Prefix reuse is preserved without storing prompts, so recorded sessions can be shared.
 - **Reproducible synthetic sessions.** Append, fork, retry, and rewrite patterns are generated from a seed. The same parameters produce byte-identical files, and every parameter is labeled as an assumption.
 - **Machine-checkable artifacts.** Traces are validated against a versioned JSON Schema and cross-record rules. Every command is deterministic, returns a meaningful exit code, and emits JSON where output is meant to be consumed by other tools.
-- **Policy simulation.** `state-bench sim` replays a trace under a snapshot placement policy and state-pool size and reports recomputed tokens. SGLang's current placement is implemented from the documented rules, with hand-checked tests.
+- **Policy simulation.** `state-bench sim` replays a trace under a snapshot placement policy and state-pool size and reports recomputed tokens. Policies from SGLang, ATOM, and vLLM are implemented from their documented rules with hand-checked tests, alongside an offline reference that bounds what any placement can save.
 - **Documented engine behavior.** [SGLang Mamba checkpoints](docs/SGLANG_MAMBA_CHECKPOINTS.md) describes where SGLang currently places, inserts, and evicts recurrent-state checkpoints, with source references.
 
 Synthetic traces exercise policies; they do not measure them. Performance results will be reported only from controlled runs on real hardware, following the [measurement protocol](docs/MEASUREMENT.md).
@@ -52,8 +52,9 @@ uv run state-bench schema > trace.schema.json
 | SGLang checkpoint behavior notes | Available, read at SGLang `166b4ae7f` |
 | Importers for public agent traces | Planned, pending license review of each dataset |
 | Recording proxy for local agent sessions | Planned |
-| Snapshot placement simulator, SGLang current policy | Available (v0: sequential, unlimited KV) |
-| Alternative placement policies | In development |
+| Snapshot placement simulator | Available (v0: sequential, unlimited KV) |
+| Policies: SGLang current and DCP mask, prompt-end anchor, Marconi-style admission, recent-checkpoint retention, offline reference | Available |
+| Value-based admission and eviction | In development |
 | Paired replay and statistics against live servers | Planned |
 
 ## Documentation

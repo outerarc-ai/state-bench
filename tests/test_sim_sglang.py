@@ -8,53 +8,24 @@ derived from the rules in docs/SGLANG_MAMBA_CHECKPOINTS.md. Defaults: cache_chun
 import json
 
 import pytest
+from sim_helpers import make_trace, req, toks
+from sim_helpers import run as sim_run
 
 from state_bench import cli
 from state_bench.sim import SimConfig, get_policy, simulate, sweep
-from state_bench.sim.core import _Store
+from state_bench.sim.core import Simulation
 from state_bench.sim.policies import SGLangCurrent
 from state_bench.traces import schema, synth
-from state_bench.traces.schema import Request, Session, Trace, TraceHeader
-from state_bench.traces.synth import BYTES_PER_TOKEN, PrefixHasher
 
 POLICY = SGLangCurrent()
 
 
-def toks(tag: int, n: int) -> list[int]:
-    """``n`` tokens unique to ``tag``."""
-    return [tag * 1_000_000 + i for i in range(n)]
+def run(trace, **cfg):
+    return sim_run(trace, POLICY, **cfg)
 
 
-def blocks_of(tokens: list[int]) -> tuple[str, ...]:
-    h = PrefixHasher()
-    h.extend(b"".join(t.to_bytes(BYTES_PER_TOKEN, "little") for t in tokens))
-    return h.blocks()
-
-
-def make_trace(*specs: tuple) -> Trace:
-    """Specs are (req_id, tokens, output_tokens, parent_req_id, pattern), in arrival order."""
-    reqs = [
-        Request(
-            req_id=rid,
-            session_id="s",
-            parent_req_id=parent,
-            branch_id=0,
-            t_arrival_s=float(i),
-            prompt_tokens=len(tokens),
-            blocks=blocks_of(tokens),
-            segments=None,
-            output_tokens=out,
-            tool_wait_s=None,
-            pattern=pattern,
-        )
-        for i, (rid, tokens, out, parent, pattern) in enumerate(specs)
-    ]
-    return Trace(TraceHeader(), [Session("s", 0.0, "test", "test", "Apache-2.0")], reqs)
-
-
-def run(trace: Trace, **cfg):
-    res = simulate(trace, POLICY, SimConfig(**cfg))
-    return res, {r.req_id: r for r in res.records}
+def res_req(tokens, out=1):
+    return req(tokens, out)
 
 
 # --- prefill placement (R6, R8) ------------------------------------------------
@@ -69,10 +40,6 @@ def test_single_chunk_snapshot_and_append_reuse():
     assert (rec["B"].kv_hit, rec["B"].usable_prefix, rec["B"].recompute_tokens) == (192, 192, 58)
     assert rec["B"].snapshots_inserted == 0
     assert res.snapshots_written == 1
-
-
-def res_req(tokens: list[int], out: int = 1) -> Request:
-    return make_trace(("X", tokens, out, None, None)).requests[0]
 
 
 def test_chunk_relative_snapshots_off_grid():
@@ -98,13 +65,25 @@ def test_chunk_size_on_grid():
     assert POLICY.plan_prefill(res_req(a), 0, 0, cfg) == [128, 256, 320]
 
 
-def test_partial_block_snapshot_is_matched_conservatively():
-    # A's snapshot at 264 sits in A's partial last block (256..299), whose hash B does
-    # not share at block resolution. The simulator reports 164 where SGLang would use 264.
+def test_partial_block_snapshot_is_matched_through_lineage():
+    # A's snapshot at 264 sits in A's partial last block (256..299). B appends to A, so it
+    # starts with all of A's prompt and can use it, as SGLang would.
     a = toks(1, 300)
     b = a + toks(2, 50)
     _, rec = run(
         make_trace(("A", a, 1, None, None), ("B", b, 1, "A", "append")),
+        chunked_prefill_size=100,
+    )
+    assert (rec["B"].kv_hit, rec["B"].usable_prefix, rec["B"].retreat_tokens) == (264, 264, 0)
+
+
+def test_fork_inside_a_block_is_matched_conservatively():
+    # B shares A's first 280 tokens. Hashes show only the first 256, so the simulator
+    # credits A's snapshot at 164 where SGLang would use 264.
+    a = toks(1, 300)
+    b = a[:280] + toks(3, 70)
+    _, rec = run(
+        make_trace(("A", a, 1, None, None), ("B", b, 1, "A", "fork")),
         chunked_prefill_size=100,
     )
     assert (rec["B"].kv_hit, rec["B"].usable_prefix, rec["B"].retreat_tokens) == (256, 164, 92)
@@ -186,9 +165,9 @@ def test_decode_snapshot(out, roundtrip, usable):
 
 def test_decode_snapshot_needs_last_token_processed():
     # prompt 200 + out 57: decode processes up to 256 tokens, so 256 is recorded.
-    assert POLICY.plan_finish(res_req(toks(1, 200), 57), SimConfig(track_interval=128)) == 256
+    assert POLICY.plan_finish(res_req(toks(1, 200), 57), SimConfig(track_interval=128)) == [256]
     # out 56: the 256th token is the final output and is never fed back.
-    assert POLICY.plan_finish(res_req(toks(1, 200), 56), SimConfig(track_interval=128)) is None
+    assert POLICY.plan_finish(res_req(toks(1, 200), 56), SimConfig(track_interval=128)) == []
 
 
 def test_decode_snapshot_without_append_child_is_not_inserted():
@@ -242,14 +221,17 @@ def test_zero_slots_store_nothing():
 
 
 def test_reinserting_existing_snapshot_refreshes_without_writing():
-    store = _Store(slots=2)
-    assert store.insert((1, "a"), 64) is True
-    assert store.insert((1, "b"), 64) is True
-    assert store.insert((1, "a"), 64) is False  # refresh: "a" is now most recent
-    assert store.insert((1, "c"), 64) is True
-    assert (store.count, store.evictions) == (2, 1)
-    assert store.best_match(("b",), 64) is None
-    assert store.best_match(("a",), 64).pos == 64
+    tr = make_trace(*[(n, toks(t, 100), 1, None, None) for t, n in enumerate("abc", 1)])
+    a, b, c = tr.requests
+    sim = Simulation(tr, POLICY, SimConfig(state_slots=2))
+    assert sim.store(a, 64, "a") == 1
+    assert sim.store(b, 64, "b") == 1
+    assert sim.store(a, 64, "a") == 0  # refresh: a is now the most recent
+    assert sim.store(c, 64, "c") == 1  # evicts b
+    assert (sim.count, sim.result.evictions) == (2, 1)
+    assert sim.best_match(b, 99) is None
+    assert sim.best_match(a, 99).pos == 64
+    assert sim.store(a, 0, "a") == 0  # no position, nothing stored
 
 
 # --- config, summary, API ----------------------------------------------------------

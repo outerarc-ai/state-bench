@@ -1,0 +1,35 @@
+# Simulated. Synthetic traces; every trace parameter is an assumption. Not a measurement.
+date: 2026-10-13
+purpose: >-
+  Check that the simulator reproduces the direction and order of magnitude of the
+  regression fixed by SGLang #40907 (merged 2026-09-25), where an absolute-grid
+  checkpoint donation mask stopped later prefill chunks from donating states.
+state_bench_commit: the commit that adds this directory
+regenerate: results/2026-10-13-sim-donation-mask/run.sh
+traces:
+  generator: synth-0.2
+  presets: [append, mixed]
+  sessions: 64
+  seed: 1
+  stats: raw/trace-<preset>-stats.json
+simulator:
+  policies:
+    sglang_current: prefix-relative donation mask (SGLang after #40907, without DCP)
+    sglang_absolute_mask: absolute-grid donation mask (SGLang with DCP; without DCP between #39115 and #40907)
+  cache_chunk_size: 64
+  state_chunk_size: 64
+  page_size: 1
+  track_interval: 256
+  state_slots: unlimited
+  swept:
+    chunked_prefill_size: [2048, 8192, 16384]
+    first_chunk_cut: [none, hashed]   # hashed: first of several chunks cut at a per-request length (assumption)
+    output_roundtrip: [true, false]
+reference:
+  upstream: https://github.com/sgl-project/sglang/pull/40907
+  upstream_setup: >-
+    Qwen3.5-397B-A17B MXFP4, MI355, TP2/DCP1, MTP, HiCache DRAM offload, AgentX,
+    chunked_prefill_size 16384, median input about 90k-100k tokens (author's measurement)
+  upstream_result: >-
+    computed prompt tokens with the fix vs with #39115: 7.89M vs 14.38M (1.82x) at
+    concurrency 20, 16.79M vs 30.77M (1.83x) at concurrency 36

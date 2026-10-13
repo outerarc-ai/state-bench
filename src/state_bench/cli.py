@@ -80,6 +80,7 @@ def _cmd_sim(args: argparse.Namespace) -> int:
         chunked_prefill_size=args.chunked_prefill_size,
         track_interval=args.track_interval,
         output_roundtrip=not args.no_output_roundtrip,
+        first_chunk_cut=args.first_chunk_cut,
     )
     try:
         policies = [get_policy(name) for name in (args.policy or ["sglang_current"])]
@@ -123,7 +124,11 @@ def main(argv: list[str] | None = None) -> int:
         "sim", help="simulate state-snapshot policies on a trace (JSON, provenance: simulated)"
     )
     sm.add_argument("path")
-    sm.add_argument("--policy", action="append", help="policy name; repeat to compare")
+    sm.add_argument(
+        "--policy",
+        action="append",
+        help="policy name, optionally with parameters (pin_recent:k=2); repeat to compare",
+    )
     sm.add_argument(
         "--state-slots",
         action="append",
@@ -135,6 +140,12 @@ def main(argv: list[str] | None = None) -> int:
     sm.add_argument("--page-size", type=int, default=1)
     sm.add_argument("--chunked-prefill-size", type=int, default=2048)
     sm.add_argument("--track-interval", type=int, default=256)
+    sm.add_argument(
+        "--first-chunk-cut",
+        choices=["none", "hashed"],
+        default="none",
+        help="'hashed' cuts the first of several prefill chunks at a per-request length",
+    )
     sm.add_argument(
         "--no-output-roundtrip",
         action="store_true",

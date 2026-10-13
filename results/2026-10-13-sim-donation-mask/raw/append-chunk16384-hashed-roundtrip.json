@@ -1,0 +1,48 @@
+[
+  {
+    "policy": "sglang_current",
+    "config": {
+      "cache_chunk_size": 64,
+      "state_chunk_size": 64,
+      "page_size": 1,
+      "chunked_prefill_size": 16384,
+      "track_interval": 256,
+      "state_slots": null,
+      "output_roundtrip": true,
+      "first_chunk_cut": "hashed"
+    },
+    "requests": 1371,
+    "prompt_tokens": 53045978,
+    "recompute_tokens": 3006701,
+    "retreat_tokens": 5952,
+    "snapshots_written": 2365,
+    "snapshots_rejected": 0,
+    "evictions": 0,
+    "state_peak": 2365,
+    "recompute_ratio": 0.056681,
+    "provenance": "simulated"
+  },
+  {
+    "policy": "sglang_absolute_mask",
+    "config": {
+      "cache_chunk_size": 64,
+      "state_chunk_size": 64,
+      "page_size": 1,
+      "chunked_prefill_size": 16384,
+      "track_interval": 256,
+      "state_slots": null,
+      "output_roundtrip": true,
+      "first_chunk_cut": "hashed"
+    },
+    "requests": 1371,
+    "prompt_tokens": 53045978,
+    "recompute_tokens": 3056218,
+    "retreat_tokens": 5952,
+    "snapshots_written": 2349,
+    "snapshots_rejected": 0,
+    "evictions": 0,
+    "state_peak": 2349,
+    "recompute_ratio": 0.057615,
+    "provenance": "simulated"
+  }
+]

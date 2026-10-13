@@ -1,25 +1,33 @@
-"""Trace-driven simulator for recurrent-state checkpoint policies.
+"""Trace-driven simulator for recurrent-state snapshot policies.
 
-The simulator replays a trace request by request and tracks two things:
+The simulator replays a trace request by request and tracks two caches:
 
 * **KV coverage**: which prefixes have attention KV cached. Version 0 assumes KV
   capacity is unlimited, so coverage only grows.
 * **State snapshots**: recurrent-state checkpoints at token positions, held in a pool
-  with a fixed number of slots and evicted in least-recently-used order.
+  with a fixed number of slots.
 
 For each request it computes the full-KV hit length, the usable prefix (the deepest
 matching snapshot that lies within the KV hit), and from those the tokens that must
-be recomputed. A policy decides where snapshots are taken during prefill and decode.
+be recomputed. A policy decides where snapshots are taken, which snapshot is evicted
+when the pool is full, and whether a new snapshot is admitted at all.
 
-Resolution and conservative matching
-------------------------------------
-Traces identify prefixes by chained 64-token block hashes, so the simulator cannot see
-equality inside a block. A snapshot at position ``p`` is keyed by the hash of the block
-that contains token ``p - 1``; a later request can use it only if it has the same hash
-at that block index. This never reports a false hit, but it can miss a real one when a
-later request shares the first ``p`` tokens yet differs later in the same block. KV
-coverage is recorded per block as the number of leading tokens cached, so a KV prefix
-that ends inside a block is matched only by requests that share that whole block.
+Matching
+--------
+Traces identify prefixes by chained 64-token block hashes, so equality inside a block is
+not visible from hashes alone. Two sources of prefix equality are used:
+
+* **Full blocks.** Equal hashes at block index ``k`` mean the first ``64 * k`` tokens are
+  equal. A snapshot at ``p`` whose block ``ceil(p / 64)`` is full in the request that
+  stored it is keyed by that block's hash.
+* **Lineage.** An ``append`` request starts with its parent's whole prompt, and a
+  ``retry`` repeats it. A snapshot in the partial last block of a prompt is keyed by the
+  request that stored it and can be used by requests that descend from it through
+  ``append`` and ``retry`` links.
+
+Prefix sharing that neither source shows, such as a fork that diverges inside a block,
+is not credited. The simulator can therefore miss reuse that an engine would find; it
+does not report reuse that is not there.
 
 As in SGLang, a match covers at most ``prompt_tokens - 1`` tokens, so at least one token
 is always computed.
@@ -29,19 +37,22 @@ Version 0 limitations
 * Requests run one at a time in arrival order; concurrency and in-flight slot
   reservations are not modeled.
 * KV capacity and KV eviction are not modeled.
-* Decode-time snapshots are matchable only through the request's first ``append``
-  child, assuming the output is replayed token for token in the next request
+* A snapshot taken during decode is stored only if the request has an ``append`` child,
+  assuming the reply reappears token for token at the start of that child
   (``SimConfig.output_roundtrip``).
 """
 
 from __future__ import annotations
 
+import hashlib
 import math
-from collections.abc import Iterable
+from collections.abc import Hashable, Iterable
 from dataclasses import asdict, dataclass, field
-from typing import Protocol
 
 from ..traces.schema import BLOCK_TOKENS, Request, Trace
+
+LINK_PATTERNS = ("append", "retry")
+"""Patterns whose request starts with the parent's whole prompt."""
 
 
 @dataclass(frozen=True)
@@ -60,6 +71,17 @@ class SimConfig:
     """Snapshots the state pool can hold; ``None`` means unlimited."""
     output_roundtrip: bool = True
     """Whether a request's output reappears verbatim at the start of its append child."""
+    first_chunk_cut: str = "none"
+    """``"none"``: chunks start at the matched prefix and take ``chunked_prefill_size``.
+    ``"hashed"``: when a prompt needs more than one chunk, the first chunk is cut at a
+    length in ``[1, chunked_prefill_size]`` derived from the request id, standing in for
+    a shared prefill budget running out (an assumption, not a model of the scheduler)."""
+
+    def __post_init__(self) -> None:
+        if self.first_chunk_cut not in ("none", "hashed"):
+            raise ValueError(
+                f"first_chunk_cut must be 'none' or 'hashed', not {self.first_chunk_cut!r}"
+            )
 
     @property
     def checkpoint_grid(self) -> int:
@@ -70,18 +92,62 @@ class SimConfig:
         return math.lcm(self.checkpoint_grid, self.track_interval)
 
 
-class Policy(Protocol):
-    """Decides where snapshots are inserted. Eviction is LRU in version 0."""
+def chunk_bounds(req: Request, start: int, cfg: SimConfig) -> list[tuple[int, int]]:
+    """Prefill chunks ``[pos, end)`` for ``req`` resuming at ``start``."""
+    out = []
+    pos = start
+    size = cfg.chunked_prefill_size
+    if cfg.first_chunk_cut == "hashed" and req.prompt_tokens - start > size:
+        digest = hashlib.blake2b(req.req_id.encode(), digest_size=8).digest()
+        first = 1 + int.from_bytes(digest, "big") % size
+        out.append((pos, pos + first))
+        pos += first
+    while pos < req.prompt_tokens:
+        end = min(pos + size, req.prompt_tokens)
+        out.append((pos, end))
+        pos = end
+    return out
 
-    name: str
+
+@dataclass
+class Snapshot:
+    """A stored state. ``key`` identifies the prefix it belongs to (see module docs)."""
+
+    key: Hashable
+    pos: int
+    owner: str
+    """Request whose token sequence the snapshot was keyed against."""
+    chain: str
+    """Conversation chain: the root of the ``append``/``retry`` links leading to the owner."""
+    created: int
+    last_used: int
+
+
+class Policy:
+    """Base policy: no snapshots, least-recently-used eviction.
+
+    Subclasses override placement (``plan_prefill``, ``plan_finish``), eviction order
+    (``priority``), or both. ``bind`` is called once per run before any request.
+    """
+
+    name = "base"
+
+    def bind(self, sim: Simulation) -> None:
+        """Called before the first request; future-aware policies precompute here."""
 
     def plan_prefill(self, req: Request, start: int, kv_hit: int, cfg: SimConfig) -> list[int]:
-        """Positions inserted during prefill, which starts at ``start`` (the usable prefix)."""
-        ...
+        """Positions stored during prefill, which starts at ``start`` (the usable prefix)."""
+        return []
 
-    def plan_finish(self, req: Request, cfg: SimConfig) -> int | None:
-        """Position inserted when the request completes, beyond those from prefill."""
-        ...
+    def plan_finish(self, req: Request, cfg: SimConfig) -> list[int]:
+        """Positions stored when the request completes. Positions past the prompt lie in
+        the reply and are stored against the request's first ``append`` child."""
+        return []
+
+    def priority(self, snap: Snapshot, sim: Simulation) -> tuple:
+        """Eviction order: the lowest value is evicted first. A new snapshot whose
+        priority is the lowest in a full pool is not admitted."""
+        return (snap.last_used,)
 
 
 @dataclass
@@ -105,6 +171,8 @@ class SimResult:
     recompute_tokens: int = 0
     retreat_tokens: int = 0
     snapshots_written: int = 0
+    snapshots_rejected: int = 0
+    """Snapshots the policy declined to admit into a full pool."""
     evictions: int = 0
     state_peak: int = 0
     records: list[RequestRecord] = field(default_factory=list)
@@ -119,157 +187,204 @@ class SimResult:
         return d
 
 
-@dataclass
-class _Snapshot:
-    key: tuple[int, str]
-    pos: int
-    last_used: int
+class Simulation:
+    """State of one run. Policies read it through ``bind`` and ``priority``."""
 
+    def __init__(self, trace: Trace, policy: Policy, cfg: SimConfig) -> None:
+        self.trace = trace
+        self.policy = policy
+        self.cfg = cfg
+        arrivals = trace.global_arrivals()
+        self.order = [r for _, r in arrivals]
+        self.arrival_s = [t for t, _ in arrivals]
+        """Absolute arrival time of each request, by arrival index."""
+        self.chain_last_arrival_s: dict[str, float] = {}
+        """Arrival time of the latest request seen so far in each chain."""
+        self.pending: Snapshot | None = None
+        """A snapshot being considered for admission into a full pool."""
+        self.by_id = {r.req_id: r for r in trace.requests}
+        self.index = {r.req_id: i for i, r in enumerate(self.order)}
+        self.now = -1
+        """Arrival index of the request being processed."""
 
-class _Store:
-    """State snapshots indexed by (block count, block hash), with LRU eviction."""
+        self.first_append_child: dict[str, Request] = {}
+        for r in self.order:
+            if (
+                r.pattern == "append"
+                and r.parent_req_id
+                and r.parent_req_id not in self.first_append_child
+            ):
+                self.first_append_child[r.parent_req_id] = r
+        self.lineage: dict[str, tuple[str, ...]] = {}
+        self.chain: dict[str, str] = {}
+        for r in self.order:
+            parent = self.by_id.get(r.parent_req_id) if r.parent_req_id else None
+            if parent is not None and r.pattern in LINK_PATTERNS:
+                self.lineage[r.req_id] = (r.req_id, *self.lineage[parent.req_id])
+                self.chain[r.req_id] = self.chain[parent.req_id]
+            else:
+                self.lineage[r.req_id] = (r.req_id,)
+                self.chain[r.req_id] = r.req_id
 
-    def __init__(self, slots: int | None) -> None:
-        self.slots = slots
-        self.by_key: dict[tuple[int, str], dict[int, _Snapshot]] = {}
+        self._kv_blocks: dict[tuple[int, str], int] = {}
+        self._kv_tail: dict[str, int] = {}
+        self._snaps: dict[Hashable, dict[int, Snapshot]] = {}
         self.count = 0
         self.clock = 0
-        self.evictions = 0
-        self.peak = 0
+        self.result = SimResult(policy=policy.name, config=asdict(cfg))
+
+    # -- keys -----------------------------------------------------------------------
+
+    @staticmethod
+    def snapshot_key(owner: Request, pos: int) -> Hashable | None:
+        """Key of a snapshot at ``pos`` in ``owner``'s token sequence."""
+        k = math.ceil(pos / BLOCK_TOKENS)
+        if pos <= 0 or pos > owner.prompt_tokens:
+            return None
+        if k <= len(owner.full_blocks):
+            return (k, owner.blocks[k - 1])
+        return ("tail", owner.req_id)
+
+    # -- KV ---------------------------------------------------------------------------
+
+    def _kv_insert(self, owner: Request, upto: int) -> None:
+        n_full = len(owner.full_blocks)
+        for k in range(1, min(n_full, upto // BLOCK_TOKENS) + 1):
+            self._kv_blocks[(k, owner.blocks[k - 1])] = BLOCK_TOKENS
+        rem = upto - (upto // BLOCK_TOKENS) * BLOCK_TOKENS
+        k = upto // BLOCK_TOKENS + 1
+        if rem and k <= n_full:
+            key = (k, owner.blocks[k - 1])
+            self._kv_blocks[key] = max(self._kv_blocks.get(key, 0), rem)
+        if upto > n_full * BLOCK_TOKENS:
+            self._kv_tail[owner.req_id] = max(self._kv_tail.get(owner.req_id, 0), upto)
+
+    def kv_hit(self, req: Request) -> int:
+        tokens = 0
+        for k, h in enumerate(req.full_blocks, start=1):
+            n = self._kv_blocks.get((k, h), 0)
+            tokens += n
+            if n < BLOCK_TOKENS:
+                break
+        for rid in self.lineage[req.req_id]:
+            tokens = max(tokens, self._kv_tail.get(rid, 0))
+        return min(tokens, max(req.prompt_tokens - 1, 0))
+
+    # -- snapshots ----------------------------------------------------------------------
 
     def tick(self) -> int:
         self.clock += 1
         return self.clock
 
-    def insert(self, key: tuple[int, str], pos: int) -> bool:
-        """Insert or refresh a snapshot. Returns True when a new snapshot was written."""
-        bucket = self.by_key.setdefault(key, {})
-        if pos in bucket:
-            bucket[pos].last_used = self.tick()
-            return False
-        if self.slots is not None:
-            if self.slots <= 0:
-                return False
-            while self.count >= self.slots:
-                self._evict_lru()
-        bucket[pos] = _Snapshot(key, pos, self.tick())
-        self.count += 1
-        self.peak = max(self.peak, self.count)
-        return True
+    def snapshots(self) -> Iterable[Snapshot]:
+        for bucket in self._snaps.values():
+            yield from bucket.values()
 
-    def _evict_lru(self) -> None:
-        victim = min(
-            (s for b in self.by_key.values() for s in b.values()), key=lambda s: s.last_used
-        )
-        del self.by_key[victim.key][victim.pos]
-        if not self.by_key[victim.key]:
-            del self.by_key[victim.key]
-        self.count -= 1
-        self.evictions += 1
-
-    def best_match(self, blocks: tuple[str, ...], limit: int) -> _Snapshot | None:
-        """Deepest snapshot reachable through ``blocks`` at a position ``<= limit``."""
-        best = None
-        for k in range(1, len(blocks) + 1):
+    def best_match(self, req: Request, limit: int) -> Snapshot | None:
+        """Deepest snapshot on ``req``'s prefix at a position ``<= limit``."""
+        keys: list[Hashable] = []
+        for k, h in enumerate(req.full_blocks, start=1):
             if (k - 1) * BLOCK_TOKENS >= limit:
                 break
-            for s in self.by_key.get((k, blocks[k - 1]), {}).values():
+            keys.append((k, h))
+        keys += [("tail", rid) for rid in self.lineage[req.req_id]]
+        best = None
+        for key in keys:
+            for s in self._snaps.get(key, {}).values():
                 if s.pos <= limit and (best is None or s.pos > best.pos):
                     best = s
         return best
 
+    def store(self, owner: Request, pos: int, chain: str) -> int:
+        """Store a snapshot at ``pos`` of ``owner``'s sequence. Returns 1 if newly written."""
+        key = self.snapshot_key(owner, pos)
+        if key is None:
+            return 0
+        bucket = self._snaps.get(key, {})
+        if pos in bucket:
+            bucket[pos].last_used = self.tick()
+            self._kv_insert(owner, pos)
+            return 0
+        t = self.tick()
+        snap = Snapshot(key, pos, owner.req_id, chain, t, t)
+        slots = self.cfg.state_slots
+        if slots is not None and self.count >= slots:
+            if slots <= 0:
+                self.result.snapshots_rejected += 1
+                return 0
+            self.pending = snap
+            try:
+                victim = min(self.snapshots(), key=lambda s: self.policy.priority(s, self))
+                reject = self.policy.priority(snap, self) < self.policy.priority(victim, self)
+            finally:
+                self.pending = None
+            if reject:
+                self.result.snapshots_rejected += 1
+                return 0
+            self._evict(victim)
+        self._snaps.setdefault(key, {})[pos] = snap
+        self._kv_insert(owner, pos)
+        self.count += 1
+        self.result.state_peak = max(self.result.state_peak, self.count)
+        return 1
 
-def _snapshot_key(blocks: tuple[str, ...], pos: int) -> tuple[int, str] | None:
-    k = math.ceil(pos / BLOCK_TOKENS)
-    if pos <= 0 or k > len(blocks):
-        return None
-    return (k, blocks[k - 1])
+    def _evict(self, victim: Snapshot) -> None:
+        bucket = self._snaps[victim.key]
+        del bucket[victim.pos]
+        if not bucket:
+            del self._snaps[victim.key]
+        self.count -= 1
+        self.result.evictions += 1
 
+    # -- run ----------------------------------------------------------------------------
 
-class _KV:
-    """Cached KV prefixes: per (block index, block hash), the leading tokens present."""
+    def run(self) -> SimResult:
+        self.policy.bind(self)
+        cfg, res = self.cfg, self.result
+        for i, r in enumerate(self.order):
+            self.now = i
+            self.chain_last_arrival_s[self.chain[r.req_id]] = self.arrival_s[i]
+            kv_hit = self.kv_hit(r)
+            snap = self.best_match(r, kv_hit)
+            usable = 0
+            if snap is not None:
+                usable = snap.pos
+                snap.last_used = self.tick()
 
-    def __init__(self) -> None:
-        self.covered: dict[tuple[int, str], int] = {}
+            chain = self.chain[r.req_id]
+            written = 0
+            for pos in self.policy.plan_prefill(r, usable, kv_hit, cfg):
+                if pos > usable:
+                    written += self.store(r, pos, chain)
+            child = self.first_append_child.get(r.req_id)
+            for pos in self.policy.plan_finish(r, cfg):
+                if pos <= r.prompt_tokens:
+                    written += self.store(r, pos, chain)
+                elif cfg.output_roundtrip and child is not None:
+                    written += self.store(child, pos, chain)
 
-    def insert(self, blocks: tuple[str, ...], upto: int) -> None:
-        for k in range(1, min(len(blocks), math.ceil(upto / BLOCK_TOKENS)) + 1):
-            n = min(BLOCK_TOKENS, upto - (k - 1) * BLOCK_TOKENS)
-            key = (k, blocks[k - 1])
-            if n > self.covered.get(key, 0):
-                self.covered[key] = n
-
-    def hit(self, req: Request) -> int:
-        tokens = 0
-        for k, h in enumerate(req.blocks, start=1):
-            n = self.covered.get((k, h), 0)
-            block_len = BLOCK_TOKENS if k < len(req.blocks) else req.last_block_tokens
-            tokens += min(n, block_len)
-            if n < block_len:
-                break
-        return tokens
+            res.records.append(
+                RequestRecord(
+                    req_id=r.req_id,
+                    prompt_tokens=r.prompt_tokens,
+                    kv_hit=kv_hit,
+                    usable_prefix=usable,
+                    recompute_tokens=r.prompt_tokens - usable,
+                    retreat_tokens=kv_hit - usable,
+                    snapshots_inserted=written,
+                )
+            )
+            res.requests += 1
+            res.prompt_tokens += r.prompt_tokens
+            res.recompute_tokens += r.prompt_tokens - usable
+            res.retreat_tokens += kv_hit - usable
+            res.snapshots_written += written
+        return res
 
 
 def simulate(trace: Trace, policy: Policy, cfg: SimConfig) -> SimResult:
     """Replay ``trace`` under ``policy`` and return token-level outcomes."""
-    store = _Store(cfg.state_slots)
-    kv = _KV()
-    first_append_child: dict[str, Request] = {}
-    for r in trace.requests:
-        if r.pattern == "append" and r.parent_req_id and r.parent_req_id not in first_append_child:
-            first_append_child[r.parent_req_id] = r
-
-    res = SimResult(policy=policy.name, config=asdict(cfg))
-
-    def insert(blocks: tuple[str, ...], pos: int) -> int:
-        key = _snapshot_key(blocks, pos)
-        if key is None:
-            return 0
-        kv.insert(blocks, pos)
-        return int(store.insert(key, pos))
-
-    for _, r in trace.global_arrivals():
-        kv_hit = min(kv.hit(r), max(r.prompt_tokens - 1, 0))
-
-        snap = store.best_match(r.blocks, kv_hit)
-        usable = 0
-        if snap is not None:
-            usable = snap.pos
-            snap.last_used = store.tick()
-
-        written = 0
-        for pos in policy.plan_prefill(r, usable, kv_hit, cfg):
-            written += insert(r.blocks, pos)
-
-        end_pos = policy.plan_finish(r, cfg)
-        if end_pos is not None:
-            if end_pos <= r.prompt_tokens:
-                written += insert(r.blocks, end_pos)
-            elif cfg.output_roundtrip and r.req_id in first_append_child:
-                child = first_append_child[r.req_id]
-                if end_pos <= child.prompt_tokens:
-                    written += insert(child.blocks, end_pos)
-
-        res.records.append(
-            RequestRecord(
-                req_id=r.req_id,
-                prompt_tokens=r.prompt_tokens,
-                kv_hit=kv_hit,
-                usable_prefix=usable,
-                recompute_tokens=r.prompt_tokens - usable,
-                retreat_tokens=kv_hit - usable,
-                snapshots_inserted=written,
-            )
-        )
-        res.requests += 1
-        res.prompt_tokens += r.prompt_tokens
-        res.recompute_tokens += r.prompt_tokens - usable
-        res.retreat_tokens += kv_hit - usable
-        res.snapshots_written += written
-
-    res.evictions = store.evictions
-    res.state_peak = store.peak
-    return res
+    return Simulation(trace, policy, cfg).run()
 
 
 def sweep(
@@ -277,6 +392,7 @@ def sweep(
 ) -> list[dict]:
     """Run every policy at every state-pool size; one summary row per combination."""
     rows = []
+    slots = list(slots)
     for p in policies:
         for n in slots:
             cfg = SimConfig(**{**asdict(base), "state_slots": n})
