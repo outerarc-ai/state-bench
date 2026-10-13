@@ -1,9 +1,9 @@
 # SGLang Mamba checkpoints
 
 How SGLang's Unified Radix Cache places, inserts, and evicts recurrent-state (Mamba/GDN)
-checkpoints. Read from SGLang commit `166b4ae7f`. As of `450837e` (14 commits later), the
-only change to `components/mamba.py` is in the HiCache buffer load-back path; the rules
-below are unchanged.
+checkpoints. Read from SGLang commit `166b4ae7f`. As of `450837e` (14 commits later),
+the only change to `mem_cache/unified_cache/components/mamba.py` is in the HiCache
+buffer load-back path; the rules below are unchanged.
 
 **Scope.** `--mamba-radix-cache-strategy extra_buffer` (chosen by the default `auto` when
 overlap scheduling is on or `page_size > 1`), without DCP, speculative decoding, or
@@ -30,23 +30,29 @@ Example: Qwen3.5 (GDN) with `page_size=1` gives `cache_chunk_size = 64`,
 
 - **R1 Usable prefix is the deepest node with a state.** Matching follows the full-KV
   prefix, but a request can resume only from the deepest node on that path holding a
-  Mamba state on device or host: `mamba_boundary_len = device_prefix_len + host_hit_length`.
-  KV matched beyond that point is recomputed. `components/mamba.py:146-168`
+  Mamba state on device or host: `mamba_boundary_len = device_prefix_len +
+  host_hit_length`. KV matched beyond that point is recomputed.
+  `mem_cache/unified_cache/components/mamba.py:146-168`
+- **R1a Matches stop one token short.** A match covers at most `input_len - 1` tokens, so
+  an exact repeat of a prompt cannot resume from a state at the prompt's end.
+  `managers/schedule_batch.py:1689-1699`
 - **R2 Branching point.** `branching_seqlen = floor(full_kv_hit / checkpoint_grid) *
-  checkpoint_grid`, set only when it exceeds `mamba_boundary_len`. `components/mamba.py:175-180`
+  checkpoint_grid`, set only when it exceeds `mamba_boundary_len`.
+  `mem_cache/unified_cache/components/mamba.py:175-180`
 - **R3 States live on nodes.** When a node splits, its state stays with the child and the
-  new parent has none. `components/mamba.py:308-318`
+  new parent has none. `mem_cache/unified_cache/components/mamba.py:308-318`
 - **R4 LRU refresh touches only the used state.** A match refreshes the matched node's
   state but not its ancestors; a newly inserted leaf enters at MRU.
-  `components/mamba.py:122-144, 222-248`
+  `mem_cache/unified_cache/components/mamba.py:122-144, 222-248`
 
 ## Snapshots during prefill
 
 - **R5 At most one snapshot per forward pass.** Each prefill chunk records at most one
-  state into the request's two-slot ping-pong buffer. `managers/schedule_batch.py:3008-3101`
-- **R6 Default position is aligned relative to the chunk start.** Without DCP:
-  `track = prefix_len + floor(extend_len / checkpoint_grid) * checkpoint_grid`, recorded
-  only when `extend_len >= checkpoint_grid`; otherwise the previous track position is kept.
+  state into the request's two-slot ping-pong buffer.
+  `managers/schedule_batch.py:3008-3101`
+- **R6 Default position is aligned relative to the chunk start.** Without DCP: `track =
+  prefix_len + floor(extend_len / checkpoint_grid) * checkpoint_grid`, recorded only
+  when `extend_len >= checkpoint_grid`; otherwise the previous track position is kept.
   If `prefix_len` is off the absolute grid, so is the snapshot.
   `managers/schedule_batch.py:3044-3051`
 - **R7 The branching point replaces the chunk's default snapshot.** When the branching
@@ -59,7 +65,8 @@ Example: Qwen3.5 (GDN) with `page_size=1` gives `cache_chunk_size = 64`,
   absolute grid; exact chunk fill is disabled when Mamba prefix sharing is on
   (`managers/schedule_policy.py:611-618`). Open pull requests
   [#41701](https://github.com/sgl-project/sglang/pull/41701) and draft
-  [#43135](https://github.com/sgl-project/sglang/pull/43135) align chunk boundaries to the grid.
+  [#43135](https://github.com/sgl-project/sglang/pull/43135) align chunk boundaries to
+  the grid.
 
 ## Insertion into the tree
 
@@ -74,19 +81,21 @@ Example: Qwen3.5 (GDN) with `page_size=1` gives `cache_chunk_size = 64`,
   page-aligned. KV computed past the latest snapshot is not inserted for an unfinished
   request. `mem_cache/unified_radix_cache.py:1084-1128`
 - **R11 Snapshots are donated, not copied.** An unfinished request hands its ping-pong
-  slot to the tree and allocates a new one. `components/mamba.py:606-641`
+  slot to the tree and allocates a new one.
+  `mem_cache/unified_cache/components/mamba.py:606-641`
 
 ## Decode and request completion
 
 - **R12 Decode snapshots use absolute positions.** A state is recorded whenever
   `seq_len % track_grid == 0`; the previous one becomes `prev`. Nothing is inserted during
-  decode. `managers/schedule_batch.py:3620-3640`,
+  decode. Decode feeds back every output token except the last, so a request reaches
+  positions up to `prompt + output - 1`. `managers/schedule_batch.py:3620-3640`,
   `managers/scheduler_components/batch_result_processor.py:1373-1378`
 - **R13 Completion inserts the latest snapshot, not the sequence end.** The position is
-  `mamba_last_track_seqlen`: the last `track_grid` multiple reached in decode, or else the
-  prefill snapshot already inserted by R9. If it exceeds the key length, the `prev` slot is
-  used; if that also exceeds it, nothing is inserted for this request (the R9 insertion
-  remains). `components/mamba.py:541-605`
+  `mamba_last_track_seqlen`: the last `track_grid` multiple reached in decode, or else
+  the prefill snapshot already inserted by R9. If it exceeds the key length, the `prev`
+  slot is used; if that also exceeds it, nothing is inserted for this request (the R9
+  insertion remains). `mem_cache/unified_cache/components/mamba.py:541-605`
 
 For an append-style next turn (this input + the reply + a tool result), the usable prefix
 is the deeper of the R13 decode snapshot (valid only when the reply is replayed token for
@@ -95,13 +104,14 @@ token) and the R9 end-of-prompt snapshot.
 ## Eviction
 
 - **R14 State pool LRU.** Failing to allocate a state slot triggers eviction
-  (`components/mamba.py:505-512`), which walks the Mamba LRU from the cold end
-  (`components/mamba.py:358-435`). Leaves are evicted with their KV; internal nodes lose
-  only the state and keep KV as a tombstone.
+  (`mem_cache/unified_cache/components/mamba.py:505-512`), which walks the Mamba LRU
+  from the cold end (`mem_cache/unified_cache/components/mamba.py:358-435`). Leaves are
+  evicted with their KV; internal nodes lose only the state and keep KV as a tombstone.
 - **R15 Per-path cap.** `mamba_max_states_per_path` defaults to −1 (unlimited). When
   positive, each insertion removes the shallowest states beyond the cap, skipping the
-  tail, fork points (nodes with more than one child), locked nodes, and device leaves, so
-  the cap is best effort. `components/mamba.py:250-306`, `arg_groups/fields/exec_.py:397-403`
+  tail, fork points (nodes with more than one child), locked nodes, and device leaves,
+  so the cap is best effort. `mem_cache/unified_cache/components/mamba.py:250-306`,
+  `arg_groups/fields/exec_.py:397-403`
 - **R16 Session-aware cache.** `enable_session_radix_cache` changes the eviction cursor
   order. Not covered here.
 
@@ -109,7 +119,7 @@ token) and the R9 end-of-prompt snapshot.
 
 - `no_buffer` requires `page_size == 1`. Each chunk and completion snapshot is taken at
   the sequence end (less the unflushed ReplaySSM ring depth at completion); there is no
-  branching-point snapshot. `components/mamba.py:570-585`
+  branching-point snapshot. `mem_cache/unified_cache/components/mamba.py:570-585`
 - DCP aligns R6 to the absolute grid and additionally requires the offset from the chunk
   start to be a multiple of `cache_chunk_size`. `managers/schedule_batch.py:3036-3043`
 - int8 checkpoints and HiCache write-back change storage cost and tiering, not positions.
