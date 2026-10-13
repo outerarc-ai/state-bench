@@ -10,6 +10,7 @@ from __future__ import annotations
 from collections.abc import Callable
 
 from ..core import Policy
+from .boundary_value import BoundaryValue
 from .oracle import OfflineOracle
 from .pin_recent import PinRecent
 from .sglang_current import SGLangCurrent
@@ -21,6 +22,7 @@ POLICIES: dict[str, Callable[..., Policy]] = {
     "prompt_end_anchor": PromptEndAnchor,
     "marconi_admission": MarconiAdmission,
     "pin_recent": PinRecent,
+    "boundary_value": BoundaryValue,
     "offline_oracle": OfflineOracle,
 }
 
@@ -62,6 +64,7 @@ def get_policy(spec: str) -> Policy:
 
 __all__ = [
     "POLICIES",
+    "BoundaryValue",
     "MarconiAdmission",
     "OfflineOracle",
     "PinRecent",

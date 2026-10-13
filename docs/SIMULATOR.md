@@ -92,11 +92,20 @@ credited.
 | `prompt_end_anchor` | One snapshot at each prompt end, rounded down to the grid; nothing else | LRU | Prompt-end anchor of ATOM [#2045](https://github.com/ROCm/ATOM/pull/2045), interval and demand checkpoints off |
 | `marconi_admission` | Last state of each request (prompt and reply), plus a snapshot at the last grid point of a KV hit that runs past the usable state | LRU | vLLM [#37898](https://github.com/vllm-project/vllm/pull/37898), after [Marconi](https://arxiv.org/abs/2411.19379) |
 | `pin_recent` | As `sglang_current` | LRU, except that the `k` newest snapshots of each active conversation chain are evicted last; parameters `k` (default 4) and `active_s` (default 120 s, assumption) | Retention proposed in SGLang RFC [#40865](https://github.com/sgl-project/sglang/issues/40865) |
+| `boundary_value` | End of every message in the prompt and of the reply, rounded down to the grid; optional KV-hit demand point | By estimated value: reuse probability from the session's history so far × tokens saved × decay over a horizon scaled to the session's request gap; low-value snapshots are not admitted | This project; see below |
 | `offline_oracle` | Exactly the positions later requests can use, known in advance | Furthest next use first (Belady), with bypass | Reference only; not implementable online |
 
 `offline_oracle` bounds every other policy when the pool is unlimited: no policy in this
 simulator can recompute fewer tokens. With a limited pool it is a strong reference, not a
 proven optimum, because snapshots differ in the tokens they save.
+
+`boundary_value` makes two assumptions to check before reading its results. It takes
+several snapshots per prefill chunk, which needs an engine that can capture interior
+states of a forward pass (ATOM #2045 does; SGLang records one per chunk). And in the
+synthetic generator every branch point, whether a fork, a rewrite, or a shared system
+prompt, falls on a message boundary, which favors boundary placement; recorded traces
+are needed to test that premise. Parameters (`gap_factor`, `tau_s`) are assumptions;
+the module docstring gives the value formula.
 
 A policy subclasses `state_bench.sim.Policy` and overrides `plan_prefill(req, start,
 kv_hit, cfg)`, `plan_finish(req, cfg)`, `priority(snapshot, sim)`, or `bind(sim)`. The

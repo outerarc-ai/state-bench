@@ -1,0 +1,33 @@
+# Simulated. Synthetic traces; every trace parameter is an assumption. Not a measurement.
+date: 2026-10-13
+purpose: >-
+  Compare snapshot placement and retention policies by recomputed prompt tokens across
+  state-pool sizes, on traces not used to design the policies.
+state_bench_commit: the commit that adds this directory
+regenerate: results/2026-10-13-sim-policy-comparison/run.sh
+traces:
+  generator: synth-0.2
+  sessions: 64
+  cases:
+    - {preset: mixed, seeds: [11, 12, 13]}
+    - {preset: fork, seeds: [11, 12, 13]}
+    - {preset: mixed, seed: 11, synth_flags: --no-shared-system}
+    - {preset: mixed, seed: 11, sim_flags: --no-output-roundtrip}
+    - {preset: mixed, seed: 21, sim_flags: --no-output-roundtrip}
+    - {preset: fork, seed: 22, sim_flags: --no-output-roundtrip}
+  stats: raw/<case>-stats.json
+simulator:
+  policies: [sglang_current, prompt_end_anchor, marconi_admission, pin_recent, boundary_value, offline_oracle]
+  policy_parameters: defaults (pin_recent k=4 active_s=120; boundary_value gap_factor=3 tau_s=120)
+  state_slots: [unlimited, 256, 64, 16]
+  cache_chunk_size: 64
+  page_size: 1
+  chunked_prefill_size: 8192
+  first_chunk_cut: hashed   # assumption: stands in for a shared prefill budget
+  track_interval: 256
+design_history:
+  seeds_used_while_designing: [1, 2, 3]
+  changed_after_seeing_this_directory: >-
+    boundary_value: reply-end and prompt-end snapshots of the latest turn both stay
+    live (previously a reply end superseded the prompt end). Found on
+    mixed-11-no-roundtrip; mixed-21 and fork-22 were run only after this change.

@@ -121,6 +121,13 @@ class Snapshot:
     """Conversation chain: the root of the ``append``/``retry`` links leading to the owner."""
     created: int
     last_used: int
+    """Logical clock values; they order events within a run."""
+    last_used_s: float = 0.0
+    """Arrival time of the request that created or last used the snapshot."""
+    hits: int = 0
+    """Requests that resumed from this snapshot."""
+    branch_hits: int = 0
+    """Of those, requests from a different conversation chain than the snapshot's."""
 
 
 class Policy:
@@ -233,6 +240,11 @@ class Simulation:
         self.clock = 0
         self.result = SimResult(policy=policy.name, config=asdict(cfg))
 
+    @property
+    def now_s(self) -> float:
+        """Arrival time of the request being processed."""
+        return self.arrival_s[self.now] if self.now >= 0 else 0.0
+
     # -- keys -----------------------------------------------------------------------
 
     @staticmethod
@@ -303,10 +315,11 @@ class Simulation:
         bucket = self._snaps.get(key, {})
         if pos in bucket:
             bucket[pos].last_used = self.tick()
+            bucket[pos].last_used_s = self.now_s
             self._kv_insert(owner, pos)
             return 0
         t = self.tick()
-        snap = Snapshot(key, pos, owner.req_id, chain, t, t)
+        snap = Snapshot(key, pos, owner.req_id, chain, t, t, self.now_s)
         slots = self.cfg.state_slots
         if slots is not None and self.count >= slots:
             if slots <= 0:
@@ -350,6 +363,10 @@ class Simulation:
             if snap is not None:
                 usable = snap.pos
                 snap.last_used = self.tick()
+                snap.last_used_s = self.now_s
+                snap.hits += 1
+                if self.chain[r.req_id] != snap.chain:
+                    snap.branch_hits += 1
 
             chain = self.chain[r.req_id]
             written = 0

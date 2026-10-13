@@ -4,8 +4,9 @@ Implements rules R1a, R2, and R5 to R13 of ``docs/SGLANG_MAMBA_CHECKPOINTS.md``,
 from SGLang commit ``166b4ae7f``. Eviction (R14) is least-recently-used; the per-path cap
 (R15) is left at its default of unlimited.
 
-``absolute_mask=True`` applies the donation mask SGLang uses when DCP is enabled: a chunk stores ``floor(chunk_end / grid) * grid`` only when
-that position is a whole number of ``cache_chunk_size`` steps from the chunk start
+``absolute_mask=True`` applies the donation mask SGLang uses when DCP is enabled: a
+chunk stores ``floor(chunk_end / grid) * grid`` only when that position is a whole
+number of ``cache_chunk_size`` steps from the chunk start
 (``schedule_batch.py:3035-3042``). Between SGLang #39115 and #40907 this mask also
 applied without DCP. Other DCP effects, such as wider radix pages, are not modeled.
 """

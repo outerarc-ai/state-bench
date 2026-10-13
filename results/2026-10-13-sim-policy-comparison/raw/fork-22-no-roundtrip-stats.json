@@ -1,0 +1,15 @@
+{
+  "generator": "synth-0.2",
+  "sessions": 64,
+  "requests": 3327,
+  "prompt_tokens_total": 106762175,
+  "prompt_tokens_median": 21839,
+  "prompt_tokens_max": 130817,
+  "patterns": {
+    "root": 64,
+    "append": 3060,
+    "fork": 203
+  },
+  "parent_reusable_token_ratio": 0.9211,
+  "has_segments": true
+}
