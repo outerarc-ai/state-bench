@@ -58,5 +58,7 @@ Each run produces a directory `results/<YYYY-MM-DD>-<name>/` containing:
 - `raw/`: per-request records.
 - `summary.md`: findings, with every number labeled.
 
-Result directories are append-only. A run that supersedes an earlier conclusion gets a
+Functional checks (correctness runs on development hardware) use the same layout and
+state in `summary.md` that they are not performance results. Result directories are
+append-only. A run that supersedes an earlier conclusion gets a
 new directory whose summary links to the old one.

@@ -1,0 +1,32 @@
+# Functional check only. Not a performance measurement.
+date: 2026-10-13
+purpose: Run SGLang's Mamba + Unified Radix Cache KL test on gfx1151 for correctness.
+device:
+  name: Strix Halo (Ryzen AI Max+ 395), Radeon 8060S Graphics
+  arch: gfx1151
+  shared: true          # other users' containers ran on the same GPU
+software:
+  image: rocm/sgl-dev:v0.5.21-rocm724-gfx1151-20261008
+  rocm: 7.2.4
+  torch: 2.9.1+rocm7.2.4
+  sglang: 0.5.22.dev542+g9f5d87125 (commit 9f5d8712514c2d9dd29c76c6080774db3fd50aa2)
+model: Qwen3.5-4B (bf16)   # upstream test uses Qwen3-Next-80B-A3B-Instruct-FP8, TP4
+server_args:
+  tp_size: 1
+  chunked_prefill_size: 2048
+  mem_fraction_static: 0.35
+  mamba_radix_cache_strategy: extra_buffer
+  mamba_track_interval: 128
+  mamba_max_states_per_path: 3
+  attention_backend: triton
+  linear_attn_backend: triton
+  mamba_backend: triton
+  max_mamba_cache_size: 64
+test:
+  file: test_unified_radix_cache_kl_mamba_local.py
+  selection: -k multiturn   # GSM8K case skipped (needs network)
+  inputs: >-
+    Offline stand-in for LongBench-v2: 18 prompts of 1500-4500 tokens (uniform
+    0.5x-1.5x of 3000, random.Random(0)) cut from the container's Python 3.12
+    stdlib sources, tokenized with the model tokenizer; written to the
+    get_input_ids local cache before the run.

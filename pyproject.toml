@@ -51,6 +51,8 @@ branch = true
 [tool.ruff]
 target-version = "py311"
 line-length = 100
+# Result directories keep adapted upstream test files verbatim.
+extend-exclude = ["results"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "RUF"]
