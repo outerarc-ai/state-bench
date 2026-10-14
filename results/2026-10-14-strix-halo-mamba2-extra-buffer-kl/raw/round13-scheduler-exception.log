@@ -1,0 +1,84 @@
+=== scheduler exception
+[2026-10-14 02:06:27] Scheduler hit an exception: Traceback (most recent call last):
+  File "/sgl-workspace/sglang/python/sglang/srt/managers/scheduler.py", line 5950, in run_scheduler_process
+    scheduler = Scheduler(server_args, port_args)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/srt/managers/scheduler.py", line 560, in __init__
+    self.init_model_worker()
+  File "/sgl-workspace/sglang/python/sglang/srt/managers/scheduler.py", line 1099, in init_model_worker
+    self.init_all_cuda_graphs()
+  File "/sgl-workspace/sglang/python/sglang/srt/managers/scheduler.py", line 1082, in init_all_cuda_graphs
+    self.tp_worker.init_cuda_graphs()
+  File "/sgl-workspace/sglang/python/sglang/srt/managers/tp_worker.py", line 425, in init_cuda_graphs
+    self.model_runner.init_cuda_graphs(
+  File "/sgl-workspace/sglang/python/sglang/srt/model_executor/model_runner.py", line 1131, in init_cuda_graphs
+    capture = capture_cuda_graphs(
+              ^^^^^^^^^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/srt/model_executor/model_runner_components/cuda_graph_setup.py", line 413, in capture_cuda_graphs
+    decode = capture_decode_graph(model_runner=model_runner)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/srt/model_executor/model_runner_components/cuda_graph_setup.py", line 738, in capture_decode_graph
+    runner = GraphRunnerCls(model_runner)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/srt/model_executor/runner/decode_cuda_graph_runner.py", line 513, in __init__
+    self.capture()
+  File "/sgl-workspace/sglang/python/sglang/srt/model_executor/runner/decode_cuda_graph_runner.py", line 1108, in capture
+    self._capture_one_stream()
+  File "/sgl-workspace/sglang/python/sglang/srt/model_executor/runner/decode_cuda_graph_runner.py", line 1165, in _capture_one_stream
+    self.capture_one_shape(
+  File "/sgl-workspace/sglang/python/sglang/srt/model_executor/runner/decode_cuda_graph_runner.py", line 1293, in capture_one_shape
+    self.backend.capture_one(
+  File "/sgl-workspace/sglang/python/sglang/srt/model_executor/runner_backend/full_cuda_graph_backend.py", line 145, in capture_one
+    output = forward_fn()
+             ^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/srt/model_executor/runner/decode_cuda_graph_runner.py", line 1257, in run_once
+    out = forward(
+          ^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 120, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/srt/models/nemotron_h.py", line 961, in forward
+    hidden_states = self.model.forward(
+                    ^^^^^^^^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/srt/models/nemotron_h.py", line 730, in forward
+    hidden_states = layer.forward(
+                    ^^^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/srt/models/nemotron_h.py", line 468, in forward
+    hidden_states = self._forward_mixer(hidden_states, forward_batch)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/srt/models/nemotron_h.py", line 635, in _forward_mixer
+    return self.mixer.forward(
+           ^^^^^^^^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/srt/models/nemotron_h.py", line 604, in forward
+    attn_output = self.attn.forward(q, k, v, forward_batch)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/srt/layers/radix_attention.py", line 294, in forward
+    return get_attn_backend().forward(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/srt/layers/attention/hybrid_linear_attn_backend.py", line 1395, in forward
+    return self.forward_decode(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/srt/layers/attention/hybrid_linear_attn_backend.py", line 1327, in forward_decode
+    return self.full_attn_backend.forward_decode(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/srt/layers/attention/triton_backend.py", line 2346, in forward_decode
+    self.decode_attention_fwd(
+  File "/opt/venv/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py", line 1044, in _fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/kernels/ops/attention/decode_attention.py", line 1213, in decode_attention_fwd
+    _decode_lean_attention_fwd(
+  File "/sgl-workspace/sglang/python/sglang/kernels/ops/attention/decode_attention.py", line 2014, in _decode_lean_attention_fwd
+    _lean_attention_decode_kernel[(total_programs,)](
+  File "/opt/venv/lib/python3.12/site-packages/triton/runtime/jit.py", line 370, in <lambda>
+    return lambda *args, **kwargs: self.run(grid=grid, warmup=False, *args, **kwargs)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/triton/runtime/jit.py", line 772, in run
+    launch_metadata = kernel.launch_metadata(grid, stream, *bound_args.values())
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/triton/compiler/compiler.py", line 494, in launch_metadata
+    self._init_handles()
+  File "/opt/venv/lib/python3.12/site-packages/triton/compiler/compiler.py", line 468, in _init_handles
+    raise_(OutOfResources(self.metadata.shared, max_shared, "shared memory"))
+=== other exceptions (last lines of each traceback)
+=== done 2026-10-14T10:08:09+08:00

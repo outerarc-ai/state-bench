@@ -1,0 +1,38 @@
+--- /tmp/claude-statebench/mamba.py.orig	2026-10-14 02:12:26.692404617 +0000
++++ /sgl-workspace/sglang/python/sglang/srt/layers/attention/mamba/mamba.py	2026-10-14 02:12:26.709924806 +0000
+@@ -35,6 +35,7 @@
+ from sglang.srt.utils import (
+     is_cpu,
+     is_cuda,
++    is_hip,
+     is_npu,
+     is_xpu,
+     set_weight_attrs,
+@@ -58,6 +59,14 @@
+     from sgl_kernel_npu.mamba.causal_conv1d import (
+         causal_conv1d_update_npu as causal_conv1d_update,
+     )
++elif is_hip():
++    # Local test patch: bind the portable Triton kernels on ROCm, as for XPU.
++    from sglang.kernels.ops.mamba.causal_conv1d_triton import (
++        causal_conv1d_fn as causal_conv1d_fn,
++        causal_conv1d_fn as causal_conv1d_fn_triton,
++        causal_conv1d_update as causal_conv1d_update,
++        causal_conv1d_update as causal_conv1d_update_triton,
++    )
+ elif is_xpu():
+     # XPU has no native causal_conv1d kernel yet; use the portable Triton
+     # implementation for both the "native" and the "_triton" entry points so
+--- /tmp/claude-statebench/activation.py.orig	2026-10-14 02:12:26.713868545 +0000
++++ /sgl-workspace/sglang/python/sglang/srt/layers/activation.py	2026-10-14 02:12:26.731948977 +0000
+@@ -290,6 +290,10 @@
+     def forward_cuda(self, x: torch.Tensor) -> torch.Tensor:
+         return relu2(x)
+ 
++    def forward_hip(self, x: torch.Tensor) -> torch.Tensor:
++        # Local test patch: relu2 is imported only on CUDA.
++        return self.forward_native(x)
++
+ 
+ class QuickGELU(BaseFusedOp):
+     def forward_native(self, x: torch.Tensor) -> torch.Tensor:

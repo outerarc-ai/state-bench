@@ -1,0 +1,78 @@
+input_ids__models_Qwen_Qwen3.5-4B_3000_18.json
+input_ids__tmp_claude-statebench_models_NVIDIA-Nemotron-Nano-9B-v2_3000_48.json
+=== sizing
+# mamba layers 27, heads 128x80, state 128, groups 8, conv 4, ssm bytes 4
+# per slot 136.9 MiB; integrated 1; available 91.7 GiB; our cap 40.0 GiB
+# slots 128: pool 17.1 GiB, mem fraction 0.440, footprint 40.4 GiB
+# slots 96: pool 12.8 GiB, mem fraction 0.394, footprint 36.1 GiB
+plan: slots mem_fraction = 96 0.39
+=== local patch
+--- /tmp/claude-statebench/mamba.py.orig	2026-10-14 02:12:26.692404617 +0000
++++ /sgl-workspace/sglang/python/sglang/srt/layers/attention/mamba/mamba.py	2026-10-14 02:12:26.709924806 +0000
+@@ -35,6 +35,7 @@
+ from sglang.srt.utils import (
+     is_cpu,
+     is_cuda,
++    is_hip,
+     is_npu,
+     is_xpu,
+     set_weight_attrs,
+@@ -58,6 +59,14 @@
+     from sgl_kernel_npu.mamba.causal_conv1d import (
+         causal_conv1d_update_npu as causal_conv1d_update,
+     )
++elif is_hip():
++    # Local test patch: bind the portable Triton kernels on ROCm, as for XPU.
++    from sglang.kernels.ops.mamba.causal_conv1d_triton import (
++        causal_conv1d_fn as causal_conv1d_fn,
++        causal_conv1d_fn as causal_conv1d_fn_triton,
++        causal_conv1d_update as causal_conv1d_update,
++        causal_conv1d_update as causal_conv1d_update_triton,
++    )
+ elif is_xpu():
+     # XPU has no native causal_conv1d kernel yet; use the portable Triton
+     # implementation for both the "native" and the "_triton" entry points so
+--- /tmp/claude-statebench/activation.py.orig	2026-10-14 02:12:26.713868545 +0000
++++ /sgl-workspace/sglang/python/sglang/srt/layers/activation.py	2026-10-14 02:12:26.731948977 +0000
+@@ -290,6 +290,10 @@
+     def forward_cuda(self, x: torch.Tensor) -> torch.Tensor:
+         return relu2(x)
++    def forward_hip(self, x: torch.Tensor) -> torch.Tensor:
++        # Local test patch: relu2 is imported only on CUDA.
++        return self.forward_native(x)
++
+ class QuickGELU(BaseFusedOp):
+     def forward_native(self, x: torch.Tensor) -> torch.Tensor:
+=== run 2026-10-14T02:12:26+00:00
+=== pytest exit 0 2026-10-14T02:22:12+00:00
+12:[2026-10-14 02:12:44] server_args={'model_path': '/tmp/claude-statebench/models/NVIDIA-Nemotron-Nano-9B-v2', 'tokenizer_path': '/tmp/claude-statebench/models/NVIDIA-Nemotron-Nano-9B-v2', 'tokenizer_mode': 'auto', 'tokenizer_backend': 'huggingface', 'tokeniz
+303:[2026-10-14 02:13:04] Load weight begin. avail mem=87.38 GB
+305:[2026-10-14 02:13:06] Load weight end. elapsed=2.17 s, type=NemotronHForCausalLM, avail mem=70.89 GB, mem usage=16.49 GB.
+306:[2026-10-14 02:13:08] max_running_requests is capped to 19 by the mamba state cache (max_mamba_cache_size=96, 5 state slots per request). To raise it: increase --mamba-full-memory-ratio or --max-mamba-cache-size, or halve the state size with --mamba-ssm-dt
+307:[2026-10-14 02:13:09] Mamba Cache is allocated. max_mamba_cache_size: 96, conv_state size: 0.18GB, ssm_state size: 12.79GB 
+309:[2026-10-14 02:13:10] KV Cache is allocated. dtype: torch.bfloat16, #tokens: 267741, K size: 2.04 GB, V size: 2.04 GB
+310:[2026-10-14 02:13:10] Memory pool end. avail mem=53.61 GB
+313:[2026-10-14 02:13:10] Capture target decode CUDA graph begin. backend=full, num_tokens_per_req=1, bs=[1, 2, 4, 8, 12, 16, 19], avail mem=53.45 GB
+315:[2026-10-14 02:13:14] Capture target decode CUDA graph end. elapsed=3.78 s, mem usage=0.23 GB, avail mem=53.22 GB.
+316:[2026-10-14 02:13:14] max_total_num_tokens=267741, chunked_prefill_size=4096, max_prefill_tokens=16384, max_running_requests=19, context_len=131072, available_gpu_mem=53.22 GB
+18:[2026-10-14 02:12:52] Failed to import amdsmi with ModuleNotFoundError("No module named 'amdsmi'")
+75:    raise RuntimeError(message) from e
+425:kl_divs=[np.float64(9.71087571299779e-06), np.float64(5.586462731969476e-05), np.float64(8.356209476938995e-07), np.float64(4.5918595814532955e-07), np.float64(2.33483589061076e-05), np.float64(3.576754283837161e-05), np.float64(0.00012978289948145302), np
+426:avg_kl_div=4.571946285142128e-05
+428:PASSED
+486:kl_divs=[np.float64(3.243972843724628e-05), np.float64(7.220455681148687e-05), np.float64(3.303729367776123e-05), np.float64(5.167168315222e-05), np.float64(0.00010366760014020207), np.float64(2.2135450552117266e-05), np.float64(8.282071575166881e-05), np.
+487:avg_kl_div=8.284670112801391e-05
+489:PASSED[2026-10-14 02:22:04] SIGTERM received. signum=None frame=None. Draining requests and shutting down...
+--- scheduler exception (if any)
+--- max mamba usage
+mamba usage: 0.67
+--- tail
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================== 2 passed, 2 warnings in 581.49s (0:09:41) ===================
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+no leftover server
+=== restored original mamba.py and activation.py
+=== done 2026-10-14T10:22:12+08:00
