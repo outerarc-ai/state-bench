@@ -55,7 +55,8 @@ uv run state-bench schema > trace.schema.json
 | 快照放置仿真器 | 可用（v0：串行、KV 容量不限） |
 | 策略：SGLang 现状及 DCP 掩码、prompt 末尾锚点、Marconi 式准入、保留近期快照、离线参考 | 可用 |
 | 消息边界放置与按价值准入、驱逐 | 可用（v0，仅仿真） |
-| 针对真实服务的配对重放与统计 | 计划中 |
+| 重放物化（无内容轨迹 → token id 流） | 可用（v0，`state-bench materialize`，Autobench JSONL；token 身份来源：假设） |
+| 针对真实服务的配对重放与统计 | 计划中（物化已完成；尚未实现实机驱动） |
 
 ## 文档
 
@@ -67,6 +68,7 @@ uv run state-bench schema > trace.schema.json
 | [合成轨迹](docs/SYNTHETIC_TRACES.md) | 模式、参数与合成数据的局限 |
 | [测量规范](docs/MEASUREMENT.md) | 结果如何产生、标注与报告 |
 | [快照放置仿真器](docs/SIMULATOR.md) | 模型、参数、输出与局限 |
+| [重放物化](docs/REPLAY.md) | 把轨迹转成可在实机重放的 token 流 |
 | [SGLang Mamba 快照](docs/SGLANG_MAMBA_CHECKPOINTS.md) | 当前的放置、插入与驱逐规则 |
 | [相关工作](docs/RELATED_WORK.md) | 本项目参考的上游讨论与实现 |
 

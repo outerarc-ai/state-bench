@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Replay materialization (`state-bench materialize`, `state_bench.replay`): turn a
+  content-free trace into a token-id stream that reproduces its prefix reuse (shared
+  blocks and `append`/`retry` lineage), emitted as Autobench timestamped JSONL with a
+  `.meta.json` sidecar and a prefix-fidelity check. Token identity is an assumption;
+  prompt structure and timing inherit the source trace.
 - Snapshot placement simulator (`state-bench sim`, `state_bench.sim`) with a state pool,
   pluggable placement and eviction, and lineage-aware prefix matching. Policies:
   `sglang_current`, `sglang_absolute_mask`, `prompt_end_anchor`, `marconi_admission`,

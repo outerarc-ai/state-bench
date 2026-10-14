@@ -14,6 +14,7 @@ import time
 import urllib.request
 
 from . import __version__
+from .replay import check_prefix_fidelity, write_replay
 from .traces import schema, synth
 
 
@@ -152,6 +153,23 @@ def _cmd_capture(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_materialize(args: argparse.Namespace) -> int:
+    trace = schema.load_trace(args.path, check=False)
+    mat = write_replay(trace, args.output, vocab_size=args.vocab_size)
+    if not args.no_check:
+        errs = check_prefix_fidelity(trace, mat)
+        if errs:
+            print("fidelity check failed:\n" + "\n".join(errs[:20]), file=sys.stderr)
+            return 1
+    n_tok = sum(len(r.prompt) for r in mat.requests)
+    print(
+        f"wrote {args.output}: {len(mat.requests)} requests, {n_tok} tokens "
+        f"(vocab {mat.vocab_size}; token identity provenance: assumption)",
+        file=sys.stderr,
+    )
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(
         prog="state-bench",
@@ -223,6 +241,18 @@ def main(argv: list[str] | None = None) -> int:
         "--model-family", default=None, help="override model_family (default: probe /v1/models)"
     )
     c.set_defaults(func=_cmd_capture)
+
+    mt = sub.add_parser(
+        "materialize",
+        help="turn a trace into a token-id stream for replay (token identity provenance: assumption)",
+    )
+    mt.add_argument("path", help="input trace (JSONL)")
+    mt.add_argument("-o", "--output", required=True, help="Autobench JSONL output path")
+    mt.add_argument(
+        "--vocab-size", type=int, required=True, help="target tokenizer vocabulary size"
+    )
+    mt.add_argument("--no-check", action="store_true", help="skip the prefix-fidelity check")
+    mt.set_defaults(func=_cmd_materialize)
 
     args, rest = p.parse_known_args(argv)
     if args.cmd == "synth":

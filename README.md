@@ -55,7 +55,8 @@ uv run state-bench schema > trace.schema.json
 | Snapshot placement simulator | Available (v0: sequential, unlimited KV) |
 | Policies: SGLang current and DCP mask, prompt-end anchor, Marconi-style admission, recent-checkpoint retention, offline reference | Available |
 | Value-based admission and eviction at message boundaries | Available (v0, simulation only) |
-| Paired replay and statistics against live servers | Planned |
+| Replay materialization (content-free trace to token-id stream) | Available (v0, `state-bench materialize`, Autobench JSONL; token identity provenance: assumption) |
+| Paired replay and statistics against live servers | Planned (materialization landed; live driver not built) |
 
 ## Documentation
 
@@ -67,6 +68,7 @@ uv run state-bench schema > trace.schema.json
 | [Synthetic traces](docs/SYNTHETIC_TRACES.md) | Patterns, parameters, and limits of synthetic data |
 | [Measurement protocol](docs/MEASUREMENT.md) | How results are produced, labeled, and reported |
 | [Snapshot placement simulator](docs/SIMULATOR.md) | Model, options, output, and limits |
+| [Replay materialization](docs/REPLAY.md) | Turning a trace into a token stream for live replay |
 | [SGLang Mamba checkpoints](docs/SGLANG_MAMBA_CHECKPOINTS.md) | Current placement, insertion, and eviction rules |
 | [Related work](docs/RELATED_WORK.md) | Upstream discussions and implementations this project builds on |
 
