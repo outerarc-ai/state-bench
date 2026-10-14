@@ -26,6 +26,10 @@ classifiers = [
 ]
 dependencies = ["jsonschema>=4.18,<5"]
 
+[project.optional-dependencies]
+# Needed only for `state-bench capture` (prompt tokenization in the proxy).
+capture = ["transformers>=4.46,<5"]
+
 [project.scripts]
 state-bench = "state_bench.cli:main"
 

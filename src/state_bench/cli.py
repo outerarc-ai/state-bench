@@ -10,6 +10,8 @@ import argparse
 import json
 import statistics
 import sys
+import time
+import urllib.request
 
 from . import __version__
 from .traces import schema, synth
@@ -104,6 +106,52 @@ def _cmd_schema(_: argparse.Namespace) -> int:
     return 0
 
 
+def _probe_model_family(upstream: str) -> str:
+    try:
+        with urllib.request.urlopen(upstream.rstrip("/") + "/v1/models", timeout=5) as r:
+            obj = json.loads(r.read())
+        models = obj.get("data")
+        if models and isinstance(models[0].get("id"), str):
+            return models[0]["id"]
+    except Exception:  # best effort
+        pass
+    return "unknown"
+
+
+def _cmd_capture(args: argparse.Namespace) -> int:
+    try:
+        from transformers import AutoTokenizer
+    except ImportError:
+        print(
+            "capture requires the transformers dependency: uv pip install 'state-bench[capture]'",
+            file=sys.stderr,
+        )
+        return 2
+    from .capture import OpenAIRecorder, ProxyServer, TraceSink
+
+    tokenizer = AutoTokenizer.from_pretrained(args.tokenizer)
+    model_family = args.model_family or _probe_model_family(args.upstream)
+    sink = TraceSink(model_family=model_family, source="proxy:openai", license_=args.license)
+    recorder = OpenAIRecorder(sink, tokenizer, model_family=model_family)
+    server = ProxyServer(args.upstream, recorder, host=args.host, port=args.port)
+    server.start()
+    print(
+        f"capturing {args.upstream} via http://{args.host}:{server.port} -> {args.output} "
+        f"(Ctrl-C to stop)",
+        file=sys.stderr,
+    )
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.stop()
+    sink.finish(args.output)
+    print(f"wrote {args.output}", file=sys.stderr)
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(
         prog="state-bench",
@@ -160,6 +208,21 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser(
         "synth", help="generate a synthetic trace (see `state-bench synth -h`)", add_help=False
     )
+
+    c = sub.add_parser(
+        "capture",
+        help="record a trace by proxying an OpenAI-compatible server (provenance: measured)",
+    )
+    c.add_argument("--upstream", required=True, help="base URL of the serving system")
+    c.add_argument("--tokenizer", required=True, help="HF tokenizer path or model id")
+    c.add_argument("-o", "--output", required=True, help="trace output path (JSONL)")
+    c.add_argument("--host", default="127.0.0.1", help="bind address (default 127.0.0.1)")
+    c.add_argument("--port", type=int, default=0, help="bind port (default: ephemeral)")
+    c.add_argument("--license", required=True, help="license statement for the captured data")
+    c.add_argument(
+        "--model-family", default=None, help="override model_family (default: probe /v1/models)"
+    )
+    c.set_defaults(func=_cmd_capture)
 
     args, rest = p.parse_known_args(argv)
     if args.cmd == "synth":

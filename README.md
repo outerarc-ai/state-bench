@@ -51,7 +51,7 @@ uv run state-bench schema > trace.schema.json
 | Synthetic generator (append, fork, retry, rewrite) | Available |
 | SGLang checkpoint behavior notes | Available, read at SGLang `166b4ae7f` |
 | Importers for public agent traces | Licenses and fields verified ([Public agent traces](docs/PUBLIC_TRACES.md)); importer in development |
-| Recording proxy for local agent sessions | Planned |
+| Recording proxy for local agent sessions | Available (v0: OpenAI-compatible chat proxy, `state-bench capture`; lineage derived from prefixes) |
 | Snapshot placement simulator | Available (v0: sequential, unlimited KV) |
 | Policies: SGLang current and DCP mask, prompt-end anchor, Marconi-style admission, recent-checkpoint retention, offline reference | Available |
 | Value-based admission and eviction at message boundaries | Available (v0, simulation only) |
