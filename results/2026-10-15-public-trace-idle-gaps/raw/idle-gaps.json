@@ -1,0 +1,253 @@
+{
+  "provenance": "recorded trace properties; derived gaps; no engine measurement",
+  "counts": {
+    "main_requests": 59204,
+    "pattern_append": 55169,
+    "pattern_fork": 70,
+    "pattern_rewrite": 3911,
+    "pattern_root": 787,
+    "requests": 59937,
+    "sessions": 739,
+    "subagent_requests": 733
+  },
+  "gaps_without_api_time": 4318,
+  "chain_ends": {
+    "count": 1043,
+    "context_tokens_p50": 125272
+  },
+  "append_new_tokens": {
+    "p50": 666,
+    "p90": 3462,
+    "p99": 16235
+  },
+  "groups": {
+    "agent=main": {
+      "gaps": 58231,
+      "gap_s": {
+        "p50": 10.0,
+        "p90": 155.0,
+        "p99": 3066.0
+      },
+      "context_tokens": {
+        "p50": 110057,
+        "p90": 299278
+      },
+      "share_of_gaps": {
+        "<1s": 0.0025,
+        "1-5s": 0.1358,
+        "5-30s": 0.6079,
+        "30s-2m": 0.129,
+        "2-10m": 0.0837,
+        "10-60m": 0.0345,
+        ">=1h": 0.0065
+      },
+      "share_of_idle_token_seconds": {
+        "<1s": 0.0,
+        "1-5s": 0.0011,
+        "5-30s": 0.03,
+        "30s-2m": 0.0328,
+        "2-10m": 0.0883,
+        "10-60m": 0.2238,
+        ">=1h": 0.6238
+      },
+      "idle_token_seconds_at_or_above": {
+        ">=5s": 0.9989,
+        ">=30s": 0.9688,
+        ">=120s": 0.936,
+        ">=600s": 0.8476
+      },
+      "idle_share_of_held_token_seconds": 0.9527,
+      "gaps_with_api_time": 53913
+    },
+    "agent=subagent": {
+      "gaps": 663,
+      "gap_s": {
+        "p50": 4.0,
+        "p90": 28.0,
+        "p99": 75.0
+      },
+      "context_tokens": {
+        "p50": 43909,
+        "p90": 72875
+      },
+      "share_of_gaps": {
+        "<1s": 0.0,
+        "1-5s": 0.6244,
+        "5-30s": 0.2836,
+        "30s-2m": 0.0875,
+        "2-10m": 0.0045,
+        "10-60m": 0.0,
+        ">=1h": 0.0
+      },
+      "share_of_idle_token_seconds": {
+        "<1s": 0.0,
+        "1-5s": 0.1726,
+        "5-30s": 0.2853,
+        "30s-2m": 0.4977,
+        "2-10m": 0.0444,
+        "10-60m": 0.0,
+        ">=1h": 0.0
+      },
+      "idle_token_seconds_at_or_above": {
+        ">=5s": 0.8274,
+        ">=30s": 0.5421,
+        ">=120s": 0.0444,
+        ">=600s": 0.0
+      },
+      "idle_share_of_held_token_seconds": 0.7583,
+      "gaps_with_api_time": 663
+    },
+    "all": {
+      "gaps": 58894,
+      "gap_s": {
+        "p50": 10.0,
+        "p90": 153.0,
+        "p99": 3056.0
+      },
+      "context_tokens": {
+        "p50": 109143,
+        "p90": 297200
+      },
+      "share_of_gaps": {
+        "<1s": 0.0025,
+        "1-5s": 0.1413,
+        "5-30s": 0.6043,
+        "30s-2m": 0.1285,
+        "2-10m": 0.0828,
+        "10-60m": 0.0341,
+        ">=1h": 0.0065
+      },
+      "share_of_idle_token_seconds": {
+        "<1s": 0.0,
+        "1-5s": 0.0012,
+        "5-30s": 0.0301,
+        "30s-2m": 0.0329,
+        "2-10m": 0.0883,
+        "10-60m": 0.2237,
+        ">=1h": 0.6238
+      },
+      "idle_token_seconds_at_or_above": {
+        ">=5s": 0.9988,
+        ">=30s": 0.9688,
+        ">=120s": 0.9358,
+        ">=600s": 0.8475
+      },
+      "idle_share_of_held_token_seconds": 0.9526,
+      "gaps_with_api_time": 54576
+    },
+    "stop=end_turn": {
+      "gaps": 2890,
+      "gap_s": {
+        "p50": 243.0,
+        "p90": 3860.0,
+        "p99": 47385.0
+      },
+      "context_tokens": {
+        "p50": 125952,
+        "p90": 378239
+      },
+      "share_of_gaps": {
+        "<1s": 0.0007,
+        "1-5s": 0.0651,
+        "5-30s": 0.11,
+        "30s-2m": 0.1633,
+        "2-10m": 0.3197,
+        "10-60m": 0.2374,
+        ">=1h": 0.1038
+      },
+      "share_of_idle_token_seconds": {
+        "<1s": 0.0,
+        "1-5s": 0.0,
+        "5-30s": 0.0004,
+        "30s-2m": 0.0038,
+        "2-10m": 0.0309,
+        "10-60m": 0.1463,
+        ">=1h": 0.8184
+      },
+      "idle_token_seconds_at_or_above": {
+        ">=5s": 1.0,
+        ">=30s": 0.9995,
+        ">=120s": 0.9957,
+        ">=600s": 0.9647
+      },
+      "idle_share_of_held_token_seconds": 0.9945,
+      "gaps_with_api_time": 2889
+    },
+    "stop=not_recorded": {
+      "gaps": 4335,
+      "gap_s": {
+        "p50": 98.0,
+        "p90": 1122.0,
+        "p99": 5021.0
+      },
+      "context_tokens": {
+        "p50": 110285,
+        "p90": 270234
+      },
+      "share_of_gaps": {
+        "<1s": 0.0005,
+        "1-5s": 0.0002,
+        "5-30s": 0.1866,
+        "30s-2m": 0.3578,
+        "2-10m": 0.292,
+        "10-60m": 0.1516,
+        ">=1h": 0.0113
+      },
+      "share_of_idle_token_seconds": {
+        "<1s": 0.0,
+        "1-5s": 0.0,
+        "5-30s": 0.0062,
+        "30s-2m": 0.056,
+        "2-10m": 0.1954,
+        "10-60m": 0.5757,
+        ">=1h": 0.1667
+      },
+      "idle_token_seconds_at_or_above": {
+        ">=5s": 1.0,
+        ">=30s": 0.9938,
+        ">=120s": 0.9378,
+        ">=600s": 0.7424
+      },
+      "idle_share_of_held_token_seconds": 0.9025,
+      "gaps_with_api_time": 18
+    },
+    "stop=tool_use": {
+      "gaps": 51669,
+      "gap_s": {
+        "p50": 9.0,
+        "p90": 65.0,
+        "p99": 609.0
+      },
+      "context_tokens": {
+        "p50": 107991,
+        "p90": 294928
+      },
+      "share_of_gaps": {
+        "<1s": 0.0028,
+        "1-5s": 0.1574,
+        "5-30s": 0.6669,
+        "30s-2m": 0.1073,
+        "2-10m": 0.052,
+        "10-60m": 0.0129,
+        ">=1h": 0.0006
+      },
+      "share_of_idle_token_seconds": {
+        "<1s": 0.0,
+        "1-5s": 0.0066,
+        "5-30s": 0.1684,
+        "30s-2m": 0.1349,
+        "2-10m": 0.2454,
+        "10-60m": 0.2857,
+        ">=1h": 0.1589
+      },
+      "idle_token_seconds_at_or_above": {
+        ">=5s": 0.9934,
+        ">=30s": 0.825,
+        ">=120s": 0.6901,
+        ">=600s": 0.4446
+      },
+      "idle_share_of_held_token_seconds": 0.8131,
+      "gaps_with_api_time": 51669
+    }
+  }
+}

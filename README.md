@@ -15,6 +15,7 @@ The project provides a content-free trace format for agent sessions, a determini
 - **Content-free traces.** Requests are recorded as chained 64-token block hashes, message boundaries, and timing. Prefix reuse is preserved without storing prompts, so recorded sessions can be shared.
 - **Reproducible synthetic sessions.** Append, fork, retry, and rewrite patterns are generated from a seed. The same parameters produce byte-identical files, and every parameter is labeled as an assumption.
 - **Machine-checkable artifacts.** Traces are validated against a versioned JSON Schema and cross-record rules. Every command is deterministic, returns a meaningful exit code, and emits JSON where output is meant to be consumed by other tools.
+- **Public agent traces.** `state-bench import weka` converts the kv-cache-tester and AgentX corpora of recorded Claude Code sessions, keeping source and license on every session and labeling which fields are recorded, derived, or assumed.
 - **Policy simulation.** `state-bench sim` replays a trace under a snapshot placement policy and state-pool size and reports recomputed tokens. Policies from SGLang, ATOM, and vLLM are implemented from their documented rules with hand-checked tests, alongside an offline reference that bounds what any placement can save.
 - **Documented engine behavior.** [SGLang Mamba checkpoints](docs/SGLANG_MAMBA_CHECKPOINTS.md) describes where SGLang currently places, inserts, and evicts recurrent-state checkpoints, with source references.
 
@@ -50,7 +51,7 @@ uv run state-bench schema > trace.schema.json
 | Trace format v0.1 and validation | Available |
 | Synthetic generator (append, fork, retry, rewrite) | Available |
 | SGLang checkpoint behavior notes | Available, read at SGLang `166b4ae7f` |
-| Importers for public agent traces | Licenses and fields verified ([Public agent traces](docs/PUBLIC_TRACES.md)); importer in development |
+| Importer for public agent traces (`state-bench import weka`: kv-cache-tester, AgentX layout) | Available ([Public agent traces](docs/PUBLIC_TRACES.md)) |
 | Recording proxy for local agent sessions | Available (v0: OpenAI-compatible chat proxy, `state-bench capture`; lineage derived from prefixes) |
 | Snapshot placement simulator | Available (v0: sequential, unlimited KV) |
 | Policies: SGLang current and DCP mask, prompt-end anchor, Marconi-style admission, recent-checkpoint retention, offline reference | Available |

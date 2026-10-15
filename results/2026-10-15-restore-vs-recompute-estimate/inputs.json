@@ -1,0 +1,90 @@
+{
+  "model": {
+    "name": "NVIDIA-Nemotron-Nano-9B-v2, bf16",
+    "params": {
+      "value": 8840000000.0,
+      "source": "derived from measured weight memory (16.46 GiB bf16 on gfx1151, 2026-10-13)"
+    },
+    "kv_bytes_per_token": {
+      "value": 16384,
+      "source": "measured KV allocation on gfx1151 (K 2.17 GiB for 283,898 tokens; V the same)"
+    },
+    "state_bytes": {
+      "value": 143547596,
+      "source": "derived from the model config: 136.9 MiB per state slot (27 Mamba layers, 128x80 heads, state 128, fp32 SSM, conv state)"
+    },
+    "attention_layers": {
+      "value": 4,
+      "source": "assumption from the published config; consistent with the measured KV size"
+    },
+    "q_heads": {
+      "value": 40,
+      "source": "assumption from the published config"
+    },
+    "head_dim": {
+      "value": 128,
+      "source": "assumption from the published config"
+    }
+  },
+  "gpu": {
+    "name": "MI300X",
+    "peak_flops": {
+      "value": 1307400000000000.0,
+      "source": "spec: MI300X dense bf16"
+    },
+    "mfu": {
+      "value": [
+        0.3,
+        0.5
+      ],
+      "source": "assumption: prefill model-FLOPs utilization"
+    }
+  },
+  "tiers": {
+    "host_dram": {
+      "bandwidth_Bps": {
+        "value": 50000000000.0,
+        "source": "assumption: effective share of PCIe Gen5 x16 (spec 64 GB/s per direction)"
+      },
+      "fixed_s": {
+        "value": 0.001,
+        "source": "assumption"
+      }
+    },
+    "local_nvme": {
+      "bandwidth_Bps": {
+        "value": 7000000000.0,
+        "source": "assumption: one PCIe Gen4 NVMe drive per GPU at its sequential-read spec"
+      },
+      "fixed_s": {
+        "value": 0.002,
+        "source": "assumption"
+      }
+    }
+  },
+  "contexts": [
+    {
+      "label": "10k",
+      "tokens": 10000
+    },
+    {
+      "label": "p50 context at a gap",
+      "tokens": 109143
+    },
+    {
+      "label": "p90 context at a gap",
+      "tokens": 297200
+    }
+  ],
+  "new_tokens": [
+    {
+      "label": "p50",
+      "tokens": 666
+    },
+    {
+      "label": "p90",
+      "tokens": 3462
+    }
+  ],
+  "trace_source": "contexts and new_tokens: results/2026-10-15-public-trace-idle-gaps (recorded trace properties)"
+}

@@ -36,9 +36,16 @@ A trace is a JSONL file. The first line is a `header`; the remaining lines are
 
 ### Hash schemes
 
-`hash_scheme` names how block hashes were computed. Synthetic traces use
-`blake2b64-chain-v1`. Hashes from different schemes are not comparable; importers keep
-the source scheme rather than rehashing.
+`hash_scheme` names how block hashes were computed. Hashes from different schemes are not
+comparable.
+
+| Scheme | Used by | Definition |
+| --- | --- | --- |
+| `blake2b64-chain-v1` | `state-bench synth` | BLAKE2b-64 chained over each block's tokens |
+| `weka-local-v1` | `state-bench import weka` | BLAKE2b-64 of the trace ID and the source's local block ID; a partial last block hashes the request ID. Equal only within one trace |
+
+Importers map source block IDs one to one and name the source scheme; they never claim
+that blocks from different sources match.
 
 ## Validation
 

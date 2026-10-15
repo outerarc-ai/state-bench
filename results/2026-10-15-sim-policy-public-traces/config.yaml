@@ -1,0 +1,28 @@
+# Simulated. Recorded public traces replayed through the snapshot simulator; session start
+# times and reply round-trip are assumptions. Not a measurement.
+date: 2026-10-15
+purpose: >-
+  Compare snapshot placement and retention policies on recorded agent traces instead of
+  synthetic ones, across state-pool sizes and both reply round-trip assumptions.
+state_bench_commit: the commit that adds this directory
+regenerate: results/2026-10-15-sim-policy-public-traces/run.sh
+traces:
+  corpus: kv-cache-tester traces (WEKA), Apache-2.0
+  commit: 94f6046dfd9c0c8bc0cdb24a5aa6579bac8669bf
+  subsets: [trace_0001-0040, trace_0041-0080, trace_0081-0120]   # sorted file names
+  import: state-bench import weka --session-interval 60   # session start times: assumption
+  stats: raw/subset-<n>-stats.json
+simulator:
+  policies: [sglang_current, prompt_end_anchor, marconi_admission, pin_recent, boundary_value, "boundary_value:demand=true", offline_oracle]
+  policy_parameters: defaults (pin_recent k=4 active_s=120; boundary_value gap_factor=3 tau_s=120)
+  state_slots: [unlimited, 256, 64, 16]
+  cache_chunk_size: 64
+  page_size: 1
+  chunked_prefill_size: 8192
+  first_chunk_cut: hashed      # assumption: stands in for a shared prefill budget
+  track_interval: 256
+  output_roundtrip: [true, false]   # the traces do not record which one holds
+design_history: >-
+  No policy was changed for or after this run. boundary_value was designed on synthetic
+  traces only. Before writing run.sh, one exploratory run on traces 0001-0020 (inside
+  subset 0) checked that the simulator accepts imported traces.

@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- `state-bench import weka` (`state_bench.traces.weka`): converts kv-cache-tester and
+  AgentX traces to the state-bench format with hash scheme `weka-local-v1`, deriving
+  parent links, patterns, and tool waits; streams one trace at a time.
+- Idle-gap distribution of the 739 kv-cache-tester traces
+  (`results/2026-10-15-public-trace-idle-gaps`).
+- Simulated policy comparison on 120 recorded kv-cache-tester sessions
+  (`results/2026-10-15-sim-policy-public-traces`).
+- Restore-versus-recompute estimate for a hybrid model on MI300X, from spec values and
+  stated assumptions (`results/2026-10-15-restore-vs-recompute-estimate`).
 - Replay materialization (`state-bench materialize`, `state_bench.replay`): turn a
   content-free trace into a token-id stream that reproduces its prefix reuse (shared
   blocks and `append`/`retry` lineage), emitted as Autobench timestamped JSONL with a

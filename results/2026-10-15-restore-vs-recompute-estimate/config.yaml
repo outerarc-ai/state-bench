@@ -1,0 +1,13 @@
+# Estimate only. Not a measurement. Inputs and their sources: inputs.json.
+date: 2026-10-15
+purpose: >-
+  First estimate of when restoring an idle agent chain's KV cache and Mamba state from
+  host memory or local NVMe beats evicting and recomputing it on one MI300X, and of the
+  time to first token after waking, at context lengths seen in public agent traces.
+regenerate: results/2026-10-15-restore-vs-recompute-estimate/run.sh
+inputs: inputs.json   # every value labeled measured, spec, derived, or assumption
+not_modeled:
+  - decode of the first output token
+  - queueing, batching, and interference between restore traffic and other requests
+  - attention-kernel efficiency differences between short and long contexts
+  - overlap of the copy with compute (layer-wise restore), which would shorten restores
