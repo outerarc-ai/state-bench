@@ -1,0 +1,177 @@
+{
+  "provenance": "estimate from spec values and assumptions; not measured",
+  "mfu=0.3": {
+    "recompute_us_per_token_short_prefix": 45.08,
+    "crossover_tokens": {
+      "host_dram": 87,
+      "local_nvme": 526
+    },
+    "wake_ttft": [
+      {
+        "context": "10k",
+        "context_tokens": 10000,
+        "new": "p50",
+        "new_tokens": 666,
+        "ttft_ms": {
+          "keep_in_hbm": 31.5,
+          "restore_from_host_dram": 38.6,
+          "restore_from_local_nvme": 77.4,
+          "recompute": 492.7
+        },
+        "held_GB": 0.307
+      },
+      {
+        "context": "10k",
+        "context_tokens": 10000,
+        "new": "p90",
+        "new_tokens": 3462,
+        "ttft_ms": {
+          "keep_in_hbm": 164.5,
+          "restore_from_host_dram": 171.7,
+          "restore_from_local_nvme": 210.5,
+          "recompute": 625.7
+        },
+        "held_GB": 0.307
+      },
+      {
+        "context": "p50 context at a gap",
+        "context_tokens": 109143,
+        "new": "p50",
+        "new_tokens": 666,
+        "ttft_ms": {
+          "keep_in_hbm": 45.2,
+          "restore_from_host_dram": 84.9,
+          "restore_from_local_nvme": 323.2,
+          "recompute": 6209.1
+        },
+        "held_GB": 1.932
+      },
+      {
+        "context": "p50 context at a gap",
+        "context_tokens": 109143,
+        "new": "p90",
+        "new_tokens": 3462,
+        "ttft_ms": {
+          "keep_in_hbm": 236.2,
+          "restore_from_host_dram": 275.9,
+          "restore_from_local_nvme": 514.2,
+          "recompute": 6400.0
+        },
+        "held_GB": 1.932
+      },
+      {
+        "context": "p90 context at a gap",
+        "context_tokens": 297200,
+        "new": "p50",
+        "new_tokens": 666,
+        "ttft_ms": {
+          "keep_in_hbm": 71.4,
+          "restore_from_host_dram": 172.7,
+          "restore_from_local_nvme": 789.5,
+          "recompute": 22692.4
+        },
+        "held_GB": 5.013
+      },
+      {
+        "context": "p90 context at a gap",
+        "context_tokens": 297200,
+        "new": "p90",
+        "new_tokens": 3462,
+        "ttft_ms": {
+          "keep_in_hbm": 372.2,
+          "restore_from_host_dram": 473.5,
+          "restore_from_local_nvme": 1090.3,
+          "recompute": 22993.2
+        },
+        "held_GB": 5.013
+      }
+    ]
+  },
+  "mfu=0.5": {
+    "recompute_us_per_token_short_prefix": 27.05,
+    "crossover_tokens": {
+      "host_dram": 145,
+      "local_nvme": 909
+    },
+    "wake_ttft": [
+      {
+        "context": "10k",
+        "context_tokens": 10000,
+        "new": "p50",
+        "new_tokens": 666,
+        "ttft_ms": {
+          "keep_in_hbm": 18.9,
+          "restore_from_host_dram": 26.0,
+          "restore_from_local_nvme": 64.8,
+          "recompute": 295.6
+        },
+        "held_GB": 0.307
+      },
+      {
+        "context": "10k",
+        "context_tokens": 10000,
+        "new": "p90",
+        "new_tokens": 3462,
+        "ttft_ms": {
+          "keep_in_hbm": 98.7,
+          "restore_from_host_dram": 105.9,
+          "restore_from_local_nvme": 144.6,
+          "recompute": 375.4
+        },
+        "held_GB": 0.307
+      },
+      {
+        "context": "p50 context at a gap",
+        "context_tokens": 109143,
+        "new": "p50",
+        "new_tokens": 666,
+        "ttft_ms": {
+          "keep_in_hbm": 27.1,
+          "restore_from_host_dram": 66.8,
+          "restore_from_local_nvme": 305.1,
+          "recompute": 3725.4
+        },
+        "held_GB": 1.932
+      },
+      {
+        "context": "p50 context at a gap",
+        "context_tokens": 109143,
+        "new": "p90",
+        "new_tokens": 3462,
+        "ttft_ms": {
+          "keep_in_hbm": 141.7,
+          "restore_from_host_dram": 181.4,
+          "restore_from_local_nvme": 419.7,
+          "recompute": 3840.0
+        },
+        "held_GB": 1.932
+      },
+      {
+        "context": "p90 context at a gap",
+        "context_tokens": 297200,
+        "new": "p50",
+        "new_tokens": 666,
+        "ttft_ms": {
+          "keep_in_hbm": 42.8,
+          "restore_from_host_dram": 144.1,
+          "restore_from_local_nvme": 761.0,
+          "recompute": 13615.4
+        },
+        "held_GB": 5.013
+      },
+      {
+        "context": "p90 context at a gap",
+        "context_tokens": 297200,
+        "new": "p90",
+        "new_tokens": 3462,
+        "ttft_ms": {
+          "keep_in_hbm": 223.3,
+          "restore_from_host_dram": 324.6,
+          "restore_from_local_nvme": 941.4,
+          "recompute": 13795.9
+        },
+        "held_GB": 5.013
+      }
+    ]
+  }
+}

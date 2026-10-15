@@ -1,0 +1,22 @@
+# Recorded trace properties and quantities derived from them. No engine was run.
+date: 2026-10-15
+purpose: >-
+  Distribution of idle gaps between consecutive requests of a conversation chain in
+  public agent traces, weighted by the context held during each gap.
+regenerate: results/2026-10-15-public-trace-idle-gaps/run.sh
+corpus:
+  name: kv-cache-tester traces
+  publisher: WEKA
+  repository: https://github.com/callanjfox/kv-cache-tester
+  commit: 94f6046dfd9c0c8bc0cdb24a5aa6579bac8669bf
+  path: traces/
+  license: Apache-2.0
+  traces: 739
+import:
+  command: state-bench import weka (hash scheme weka-local-v1)
+  parent_and_pattern: derived from shared block prefixes within each agent
+definitions:
+  gap: think_time of the earliest non-fork child (state-bench tool_wait_s), whole seconds
+  context_held: earlier request's input + output tokens (approximation)
+  busy_time: earlier request's api_time; gaps without it are left out of the idle share
+analysis: analyze.py

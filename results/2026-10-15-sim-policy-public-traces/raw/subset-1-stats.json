@@ -1,0 +1,15 @@
+{
+  "generator": "state-bench 0.1.0.dev0 import weka",
+  "sessions": 40,
+  "requests": 1711,
+  "prompt_tokens_total": 287724232,
+  "prompt_tokens_median": 118236,
+  "prompt_tokens_max": 838246,
+  "patterns": {
+    "root": 43,
+    "append": 1560,
+    "rewrite": 108
+  },
+  "parent_reusable_token_ratio": 0.9507,
+  "has_segments": false
+}
