@@ -99,6 +99,26 @@ def _cmd_sim(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_import(args: argparse.Namespace) -> int:
+    from .traces import weka
+
+    try:
+        n_sessions, n_requests = weka.write_import(
+            args.paths,
+            args.output,
+            source=args.source,
+            license_=args.license,
+            session_interval_s=args.session_interval,
+            limit=args.limit,
+            generator=f"state-bench {__version__} import weka",
+        )
+    except (schema.TraceError, KeyError, ValueError) as e:
+        print(f"import failed: {e}", file=sys.stderr)
+        return 1
+    print(f"wrote {args.output}: {n_sessions} sessions, {n_requests} requests", file=sys.stderr)
+    return 0
+
+
 def _cmd_schema(_: argparse.Namespace) -> int:
     print(json.dumps(schema.JSON_SCHEMA, indent=2))
     return 0
@@ -153,6 +173,23 @@ def main(argv: list[str] | None = None) -> int:
     )
     sm.add_argument("--per-request", action="store_true", help="include per-request records")
     sm.set_defaults(func=_cmd_sim)
+
+    im = sub.add_parser(
+        "import", help="convert public traces to the state-bench format (see docs/PUBLIC_TRACES.md)"
+    )
+    im.add_argument("format", choices=["weka"], help="source format (kv-cache-tester, AgentX)")
+    im.add_argument("paths", nargs="+", help="JSON or JSONL files, or directories of them")
+    im.add_argument("-o", "--output", required=True, help="output JSONL trace")
+    im.add_argument("--source", required=True, help="corpus name recorded in every session")
+    im.add_argument("--license", required=True, help="corpus license recorded in every session")
+    im.add_argument(
+        "--session-interval",
+        type=float,
+        default=0.0,
+        help="start session i at i * this many seconds (an assumption; default 0)",
+    )
+    im.add_argument("--limit", type=int, help="import at most this many traces")
+    im.set_defaults(func=_cmd_import)
 
     sc = sub.add_parser("schema", help="print the JSON Schema for trace records")
     sc.set_defaults(func=_cmd_schema)
