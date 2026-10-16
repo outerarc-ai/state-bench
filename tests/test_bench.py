@@ -205,3 +205,72 @@ def test_cli_paired(tmp_path, capsys):
     rep = json.loads(capsys.readouterr().out)
     assert rep["complete_pairs"] == 1
     assert rep["comparisons"][0]["verdict"] == "too few pairs"
+
+
+# -- SGLang load ---------------------------------------------------------------------------
+
+
+def fake_sglang():
+    import threading
+    from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+    seen: set = set()
+
+    class H(BaseHTTPRequestHandler):
+        def log_message(self, *a):
+            pass
+
+        def do_POST(self):
+            body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+            ids = body["input_ids"]
+            if len(ids) > 2500:
+                self.send_response(400)
+                self.end_headers()
+                return
+            key = tuple(ids[:64])
+            cached = 64 if key in seen else 0
+            seen.add(key)
+            self.send_response(200)
+            self.end_headers()
+            for i in range(2):
+                meta = {"completion_tokens": i + 1, "cached_tokens": cached}
+                self.wfile.write(f"data: {json.dumps({'meta_info': meta})}\n\n".encode())
+            self.wfile.write(b"data: [DONE]\n\n")
+
+    srv = ThreadingHTTPServer(("127.0.0.1", 0), H)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    return srv, f"http://127.0.0.1:{srv.server_address[1]}"
+
+
+def test_build_prompts_is_deterministic_append_chains():
+    from state_bench.bench.sglang_load import LoadShape, build_prompts
+
+    shape = LoadShape(sessions=2, turns=3, shared_prefix=10, turn_min=5, turn_max=7)
+    a, b = build_prompts(shape), build_prompts(shape)
+    assert a == b
+    assert [r for r, _ in a] == ["s0-t0", "s1-t0", "s0-t1", "s1-t1", "s0-t2", "s1-t2"]
+    assert a[0][1][:10] == a[1][1][:10]  # shared prefix
+    assert a[2][1][: len(a[0][1])] == a[0][1]  # append chain
+    with pytest.raises(ValueError):
+        LoadShape(turn_min=0)
+    with pytest.raises(ValueError):
+        LoadShape(sessions=0)
+    with pytest.raises(ValueError):
+        LoadShape(vocab_low=5, vocab_high=5)
+
+
+def test_run_load_against_fake_server(tmp_path, capsys):
+    srv, url = fake_sglang()
+    try:
+        out = tmp_path / "r.jsonl"
+        args = ["paired", "load", url, "-o", str(out), "--sessions", "2", "--turns", "3"]
+        args += ["--shared-prefix", "100", "--turn-min", "900", "--turn-max", "1000"]
+        assert cli.main(args) == 0
+        assert "failed requests" in capsys.readouterr().err
+        recs = bench.load_records(out)
+        assert len(recs) == 6
+        assert recs[0].completed and recs[0].ttft_s is not None and recs[0].output_tokens == 2
+        assert recs[1].cached_tokens == 64  # second session shares the prefix
+        assert any(not r.admitted and r.error for r in recs)  # prompts over 2500 tokens
+    finally:
+        srv.shutdown()

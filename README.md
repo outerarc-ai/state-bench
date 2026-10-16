@@ -56,7 +56,7 @@ uv run state-bench schema > trace.schema.json
 | Snapshot placement simulator | Available (v0: sequential, unlimited KV) |
 | Policies: SGLang current and DCP mask, prompt-end anchor, Marconi-style admission, recent-checkpoint retention, offline reference | Available |
 | Value-based admission and eviction at message boundaries | Available (v0, simulation only) |
-| Paired baseline/candidate runs and statistics (`state-bench paired`) | Available (orchestration, four denominators, bootstrap intervals); live replay driver planned |
+| Paired baseline/candidate runs and statistics (`state-bench paired`) | Available (orchestration, four denominators, bootstrap intervals, a multi-turn SGLang load); trace replay driver planned |
 
 ## Documentation
 

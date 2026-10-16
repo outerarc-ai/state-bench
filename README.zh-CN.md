@@ -56,7 +56,7 @@ uv run state-bench schema > trace.schema.json
 | 快照放置仿真器 | 可用（v0：串行、KV 容量不限） |
 | 策略：SGLang 现状及 DCP 掩码、prompt 末尾锚点、Marconi 式准入、保留近期快照、离线参考 | 可用 |
 | 消息边界放置与按价值准入、驱逐 | 可用（v0，仅仿真） |
-| 基线与候选的配对运行与统计（`state-bench paired`） | 可用（运行编排、四个分母、bootstrap 区间）；实机重放驱动计划中 |
+| 基线与候选的配对运行与统计（`state-bench paired`） | 可用（运行编排、四个分母、bootstrap 区间、SGLang 多轮负载）；按 trace 重放的驱动计划中 |
 
 ## 文档
 

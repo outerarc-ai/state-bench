@@ -128,6 +128,21 @@ def _cmd_paired(args: argparse.Namespace) -> int:
         for r in bench.plan(args.pairs, args.order):
             print(f"{r.run}\tpair {r.pair}\t{r.arm}")
         return 0
+    if args.action == "load":
+        from .bench.sglang_load import LoadShape, run_load
+
+        shape = LoadShape(
+            sessions=args.sessions,
+            turns=args.turns,
+            shared_prefix=args.shared_prefix,
+            turn_min=args.turn_min,
+            turn_max=args.turn_max,
+            max_new_tokens=args.max_new_tokens,
+            seed=args.seed,
+        )
+        failures = run_load(args.url, args.output, shape)
+        print(f"wrote {args.output}; {failures} failed requests", file=sys.stderr)
+        return 0
     if args.action == "run":
         config = json.loads(open(args.config, encoding="utf-8").read())
         bench.run(config, args.output, log=lambda m: print(m, file=sys.stderr))
@@ -231,6 +246,18 @@ def main(argv: list[str] | None = None) -> int:
     pr = pas.add_parser("run", help="execute a run configuration (JSON)")
     pr.add_argument("config")
     pr.add_argument("-o", "--output", required=True, help="run directory to create")
+    pl = pas.add_parser(
+        "load", help="send a deterministic multi-turn load to an SGLang server; write records"
+    )
+    pl.add_argument("url", help="server base URL, e.g. http://127.0.0.1:30000")
+    pl.add_argument("-o", "--output", required=True, help="records JSONL")
+    pl.add_argument("--sessions", type=int, default=8)
+    pl.add_argument("--turns", type=int, default=6)
+    pl.add_argument("--shared-prefix", type=int, default=1024)
+    pl.add_argument("--turn-min", type=int, default=256)
+    pl.add_argument("--turn-max", type=int, default=1024)
+    pl.add_argument("--max-new-tokens", type=int, default=16)
+    pl.add_argument("--seed", type=int, default=17)
     prp = pas.add_parser("report", help="paired report of a run directory (JSON)")
     prp.add_argument("run_dir")
     pa.set_defaults(func=_cmd_paired)

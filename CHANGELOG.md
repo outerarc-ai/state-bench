@@ -12,6 +12,8 @@
 - `state-bench paired` (`state_bench.bench`): alternating baseline/candidate runs driven by
   shell commands, per-request records, the four denominators, and paired bootstrap
   statistics, following `docs/MEASUREMENT.md`.
+- `state-bench paired load` (`state_bench.bench.sglang_load`): a deterministic
+  multi-turn load for SGLang's `/generate` endpoint that writes per-request records.
 - `state-bench sim --path-cap-min-usage` applies the per-path cap only while the state
   pool is nearly full, and a sweep of it
   (`results/2026-10-16-sim-pressure-gated-cap`).

@@ -2,17 +2,20 @@
 
 from .paired import ARMS, DEFAULT_METRICS, PlannedRun, plan, report, run
 from .records import RequestResult, Slo, denominators, load_records, run_metrics
+from .sglang_load import LoadShape, build_prompts, run_load
 from .stats import MIN_PAIRS, PairedResult, bootstrap_median_ci, compare_pairs, percentile
 
 __all__ = [
     "ARMS",
     "DEFAULT_METRICS",
     "MIN_PAIRS",
+    "LoadShape",
     "PairedResult",
     "PlannedRun",
     "RequestResult",
     "Slo",
     "bootstrap_median_ci",
+    "build_prompts",
     "compare_pairs",
     "denominators",
     "load_records",
@@ -20,5 +23,6 @@ __all__ = [
     "plan",
     "report",
     "run",
+    "run_load",
     "run_metrics",
 ]

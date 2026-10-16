@@ -94,6 +94,13 @@ warns about failed runs, a device check without the configured idle pattern, and
 than five complete pairs. `on_time_valid` is reported only when the load command checked
 output correctness; otherwise it is `null` and `on_time` gives the count without it.
 
-The load command is not part of this tool. A replay driver that sends a trace's requests
-on its recorded schedule is planned.
+For SGLang, `state-bench paired load URL -o {records}` is a ready-made load command: a
+deterministic multi-turn workload ([`bench/sglang_load.py`](../src/state_bench/bench/sglang_load.py))
+in which sessions share a prefix and grow as append chains, sent one request at a time in
+round-robin order over the native `/generate` endpoint with streaming. It records TTFT,
+end-to-end time, and the server-reported cached tokens. Its shape (sessions, turns,
+prefix and turn lengths, seed) is an assumption and is stored in the run configuration.
+It does not check output correctness, so `on_time_valid` stays `null`; the
+correctness gate of the run conditions is a separate step. A replay driver that sends a
+recorded trace's requests on its recorded schedule is planned.
 
