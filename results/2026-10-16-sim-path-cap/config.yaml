@@ -1,0 +1,32 @@
+# Simulated. Recorded public traces; session start times and reply round-trip are
+# assumptions. Not a measurement.
+date: 2026-10-16
+purpose: >-
+  Measure how much of the recompute lost to state-pool pressure SGLang's existing
+  per-path snapshot cap (--mamba-max-states-per-path, default unlimited) recovers, and
+  compare it with value-based retention, on recorded agent traces.
+state_bench_commit: the commit that adds this directory
+regenerate: results/2026-10-16-sim-path-cap/run.sh
+traces:
+  corpus: kv-cache-tester traces (WEKA), Apache-2.0
+  commit: 94f6046dfd9c0c8bc0cdb24a5aa6579bac8669bf
+  subsets: [trace_0001-0040, trace_0041-0080, trace_0081-0120]   # as in 2026-10-15-sim-policy-public-traces
+  import: state-bench import weka --session-interval 60   # session start times: assumption
+simulator:
+  per_path_cap:
+    values: [none, 1, 2, 4, 8]
+    applied_to: sglang_current
+    model: >-
+      SGLang c4870d98 mem_cache/unified_cache/components/mamba.py:251-306 and
+      arg_groups/fields/exec_.py:435-441. Fork points are recognized only at block
+      boundaries (approximation; see docs/SIMULATOR.md).
+  reference_policies_without_cap: [prompt_end_anchor, "boundary_value:reply_end=false", offline_oracle]
+  state_slots: [unlimited, 256, 128, 64, 32, 16]
+  cache_chunk_size: 64
+  page_size: 1
+  chunked_prefill_size: 8192
+  first_chunk_cut: hashed      # assumption
+  track_interval: 256
+  output_roundtrip: [true, false]
+design_history: >-
+  No policy was changed for or after this run. The cap values were fixed before the run.

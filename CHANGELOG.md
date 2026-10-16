@@ -9,6 +9,9 @@
   (`results/2026-10-15-public-trace-idle-gaps`).
 - Simulated policy comparison on 120 recorded kv-cache-tester sessions
   (`results/2026-10-15-sim-policy-public-traces`).
+- `state-bench sim --max-states-per-path` (`SimConfig.max_states_per_path`) models
+  SGLang's per-path snapshot cap, and a sweep of it on recorded traces
+  (`results/2026-10-16-sim-path-cap`).
 - `boundary_value` accepts `eviction=lru` to keep its placement and evict by recency,
   and an ablation separating eviction from placement on recorded traces
   (`results/2026-10-16-sim-retention-ablation`).

@@ -76,12 +76,19 @@ class SimConfig:
     ``"hashed"``: when a prompt needs more than one chunk, the first chunk is cut at a
     length in ``[1, chunked_prefill_size]`` derived from the request id, standing in for
     a shared prefill budget running out (an assumption, not a model of the scheduler)."""
+    max_states_per_path: int | None = None
+    """Per-path snapshot cap (SGLang ``--mamba-max-states-per-path``); ``None`` means
+    unlimited. After each new snapshot, the shallowest snapshots on its path beyond the
+    cap are evicted, skipping the new one, fork points, and the one the current request
+    resumed from."""
 
     def __post_init__(self) -> None:
         if self.first_chunk_cut not in ("none", "hashed"):
             raise ValueError(
                 f"first_chunk_cut must be 'none' or 'hashed', not {self.first_chunk_cut!r}"
             )
+        if self.max_states_per_path is not None and self.max_states_per_path < 1:
+            raise ValueError("max_states_per_path must be >= 1 or None")
 
     @property
     def checkpoint_grid(self) -> int:
@@ -234,7 +241,11 @@ class Simulation:
                 self.chain[r.req_id] = r.req_id
 
         self._kv_blocks: dict[tuple[int, str], int] = {}
+        self._kv_children: dict[tuple[int, str], set[str]] = {}
+        """Distinct next blocks seen after each cached full block (for fork points)."""
         self._kv_tail: dict[str, int] = {}
+        self.locked: Snapshot | None = None
+        """The snapshot the current request resumed from."""
         self._snaps: dict[Hashable, dict[int, Snapshot]] = {}
         self.count = 0
         self.clock = 0
@@ -260,6 +271,8 @@ class Simulation:
     # -- KV ---------------------------------------------------------------------------
 
     def _kv_insert(self, owner: Request, upto: int) -> None:
+        for k in range(1, min(len(owner.blocks), math.ceil(upto / BLOCK_TOKENS))):
+            self._kv_children.setdefault((k, owner.blocks[k - 1]), set()).add(owner.blocks[k])
         n_full = len(owner.full_blocks)
         for k in range(1, min(n_full, upto // BLOCK_TOKENS) + 1):
             self._kv_blocks[(k, owner.blocks[k - 1])] = BLOCK_TOKENS
@@ -339,7 +352,41 @@ class Simulation:
         self._kv_insert(owner, pos)
         self.count += 1
         self.result.state_peak = max(self.result.state_peak, self.count)
+        if self.cfg.max_states_per_path is not None:
+            self._cap_path(owner, snap)
         return 1
+
+    def _is_fork(self, snap: Snapshot) -> bool:
+        """Whether more than one cached sequence continues past ``snap``.
+
+        Known only at block boundaries; a snapshot inside a block or on a lineage tail
+        is treated as having a single continuation.
+        """
+        key = snap.key
+        if key[0] == "tail" or snap.pos != key[0] * BLOCK_TOKENS:
+            return False
+        return len(self._kv_children.get(key, ())) > 1
+
+    def _cap_path(self, owner: Request, tail: Snapshot) -> None:
+        """SGLang's per-path cap (R15): evict the shallowest eligible snapshots on the
+        path to ``tail`` beyond ``max_states_per_path``."""
+        keys: list[Hashable] = [
+            (k, owner.blocks[k - 1])
+            for k in range(1, min(len(owner.full_blocks), math.ceil(tail.pos / BLOCK_TOKENS)) + 1)
+        ]
+        keys += [("tail", rid) for rid in self.lineage[owner.req_id]]
+        holders = sorted(
+            (s for key in keys for s in self._snaps.get(key, {}).values() if s.pos <= tail.pos),
+            key=lambda s: s.pos,
+        )
+        excess = len(holders) - self.cfg.max_states_per_path
+        for s in holders:
+            if excess <= 0 or s is tail:
+                break
+            if s is self.locked or self._is_fork(s):
+                continue
+            self._evict(s)
+            excess -= 1
 
     def _evict(self, victim: Snapshot) -> None:
         bucket = self._snaps[victim.key]
@@ -359,6 +406,7 @@ class Simulation:
             self.chain_last_arrival_s[self.chain[r.req_id]] = self.arrival_s[i]
             kv_hit = self.kv_hit(r)
             snap = self.best_match(r, kv_hit)
+            self.locked = snap
             usable = 0
             if snap is not None:
                 usable = snap.pos

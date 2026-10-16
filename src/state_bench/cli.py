@@ -81,6 +81,7 @@ def _cmd_sim(args: argparse.Namespace) -> int:
         track_interval=args.track_interval,
         output_roundtrip=not args.no_output_roundtrip,
         first_chunk_cut=args.first_chunk_cut,
+        max_states_per_path=args.max_states_per_path,
     )
     try:
         policies = [get_policy(name) for name in (args.policy or ["sglang_current"])]
@@ -165,6 +166,12 @@ def main(argv: list[str] | None = None) -> int:
         choices=["none", "hashed"],
         default="none",
         help="'hashed' cuts the first of several prefill chunks at a per-request length",
+    )
+    sm.add_argument(
+        "--max-states-per-path",
+        type=int,
+        default=None,
+        help="per-path snapshot cap, as SGLang's --mamba-max-states-per-path (default: none)",
     )
     sm.add_argument(
         "--no-output-roundtrip",

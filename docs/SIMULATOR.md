@@ -27,6 +27,7 @@ combination. A policy takes parameters after a colon, for example
 | `--track-interval` | 256 | Decode snapshot interval |
 | `--no-output-roundtrip` | off | Assume replies are not replayed token for token in the next request |
 | `--first-chunk-cut` | `none` | `hashed` cuts the first of several prefill chunks at a per-request length, standing in for a shared prefill budget running out (assumption) |
+| `--max-states-per-path` | none | Per-path snapshot cap, as SGLang's `--mamba-max-states-per-path`; applies to every policy (see Model) |
 | `--per-request` | off | Include one record per request |
 
 From the API:
@@ -67,6 +68,13 @@ The simulator keeps two caches:
   pool is full, the policy's priority picks the victim; a new snapshot whose priority is
   lower than every resident's is not admitted. The default priority is least recently
   used, and using a snapshot refreshes only that snapshot.
+- **Per-path cap (optional).** With `--max-states-per-path N`, each newly written
+  snapshot triggers the eviction of the shallowest snapshots on its path beyond `N`, as
+  SGLang does (`mem_cache/unified_cache/components/mamba.py:251-306` at `c4870d98`). The
+  new snapshot, fork points, and the snapshot the current request resumed from are
+  skipped. A fork point is recognized only at a block boundary, from the distinct blocks
+  cached after it; SGLang's tree also sees forks inside a block, so the simulator may
+  evict a few snapshots that SGLang would keep.
 
 For each request, in arrival order:
 
