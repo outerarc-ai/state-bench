@@ -1,0 +1,28 @@
+# Simulated. Recorded public traces; session start times and reply round-trip are
+# assumptions. Not a measurement.
+date: 2026-10-16
+purpose: >-
+  Test whether applying the per-path snapshot cap only while the state pool is nearly
+  full keeps the cap's gains under pressure without its cost when the pool has room.
+state_bench_commit: the commit that adds this directory
+regenerate: results/2026-10-16-sim-pressure-gated-cap/run.sh
+traces:
+  corpus: kv-cache-tester traces (WEKA), Apache-2.0
+  commit: 94f6046dfd9c0c8bc0cdb24a5aa6579bac8669bf
+  subsets: [trace_0001-0040, trace_0041-0080, trace_0081-0120]
+  import: state-bench import weka --session-interval 60   # session start times: assumption
+simulator:
+  policy: sglang_current
+  max_states_per_path: [1, 2]
+  path_cap_min_usage: [0.8, 0.95]   # fraction of state_slots; not an SGLang option
+  state_slots: [unlimited, 256, 128, 64, 32, 16]
+  cache_chunk_size: 64
+  page_size: 1
+  chunked_prefill_size: 8192
+  first_chunk_cut: hashed      # assumption
+  track_interval: 256
+  output_roundtrip: [true, false]
+comparison: >-
+  Fixed caps, no cap, value-based retention, and the offline reference are read from
+  results/2026-10-16-sim-path-cap (same traces and settings).
+design_history: The gate thresholds and cap values were fixed before the run.

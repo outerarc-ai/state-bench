@@ -13,7 +13,8 @@
   shell commands, per-request records, the four denominators, and paired bootstrap
   statistics, following `docs/MEASUREMENT.md`.
 - `state-bench sim --path-cap-min-usage` applies the per-path cap only while the state
-  pool is nearly full.
+  pool is nearly full, and a sweep of it
+  (`results/2026-10-16-sim-pressure-gated-cap`).
 - `state-bench sim --max-states-per-path` (`SimConfig.max_states_per_path`) models
   SGLang's per-path snapshot cap, and a sweep of it on recorded traces
   (`results/2026-10-16-sim-path-cap`).
