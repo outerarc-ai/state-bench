@@ -104,3 +104,6 @@ It does not check output correctness, so `on_time_valid` stays `null`; the
 correctness gate of the run conditions is a separate step. A replay driver that sends a
 recorded trace's requests on its recorded schedule is planned.
 
+[`envs/mi300x`](../envs/mi300x/README.md) applies this protocol on one MI300X with SGLang's
+ROCm image.
+

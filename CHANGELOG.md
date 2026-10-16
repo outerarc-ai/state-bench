@@ -12,6 +12,10 @@
 - `state-bench paired` (`state_bench.bench`): alternating baseline/candidate runs driven by
   shell commands, per-request records, the four denominators, and paired bootstrap
   statistics, following `docs/MEASUREMENT.md`.
+- `envs/mi300x`: scripts for one MI300X in SGLang's ROCm image: environment record and
+  idle check, the Nemotron-H on ROCm reproduction, single-GPU hybrid-cache correctness
+  checks, paired per-path cap runs at several state-pool sizes, prefill curve, and
+  host-device copy bandwidth.
 - `state-bench paired load` (`state_bench.bench.sglang_load`): a deterministic
   multi-turn load for SGLang's `/generate` endpoint that writes per-request records.
 - `state-bench sim --path-cap-min-usage` applies the per-path cap only while the state

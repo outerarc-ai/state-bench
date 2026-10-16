@@ -56,6 +56,7 @@ uv run state-bench schema > trace.schema.json
 | Snapshot placement simulator | Available (v0: sequential, unlimited KV) |
 | Policies: SGLang current and DCP mask, prompt-end anchor, Marconi-style admission, recent-checkpoint retention, offline reference | Available |
 | Value-based admission and eviction at message boundaries | Available (v0, simulation only) |
+| Run scripts for one MI300X ([`envs/mi300x`](envs/mi300x/README.md)): environment record, correctness checks, paired per-path cap runs, prefill and copy bandwidth | Available; not yet run on MI300X |
 | Paired baseline/candidate runs and statistics (`state-bench paired`) | Available (orchestration, four denominators, bootstrap intervals, a multi-turn SGLang load); trace replay driver planned |
 
 ## Documentation
