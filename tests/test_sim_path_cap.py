@@ -87,3 +87,23 @@ def test_cli_flag(tmp_path, capsys):
     assert cli.main(args) == 0
     plain = json.loads(capsys.readouterr().out)[0]
     assert plain["config"]["max_states_per_path"] is None
+
+
+def test_cap_applies_only_under_pressure():
+    trace = make_trace(("A", toks(1, 300), 1, None, None))
+    pos = At(64, 128, 192, 256)
+    # Pool of 8: usage reaches 0.5 only at the fourth snapshot, which then evicts the
+    # two shallowest down to the cap of 2.
+    sim = run_sim(trace, pos, state_slots=8, max_states_per_path=2, path_cap_min_usage=0.5)
+    assert held(sim) == [("A", 192), ("A", 256)]
+    # Below the threshold nothing is evicted.
+    sim = run_sim(trace, pos, state_slots=10, max_states_per_path=2, path_cap_min_usage=0.5)
+    assert len(held(sim)) == 4
+    # An unlimited pool never counts as under pressure.
+    sim = run_sim(trace, pos, max_states_per_path=2, path_cap_min_usage=0.5)
+    assert len(held(sim)) == 4
+
+
+def test_invalid_min_usage():
+    with pytest.raises(ValueError):
+        SimConfig(path_cap_min_usage=1.5)

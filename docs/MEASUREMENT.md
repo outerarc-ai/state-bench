@@ -1,8 +1,9 @@
 # Measurement protocol
 
 This protocol governs every performance number published from this repository, in
-documents, issues, or pull requests elsewhere. Tooling that enforces it is in
-development; until then the rules apply to manual runs.
+documents, issues, or pull requests elsewhere. `state-bench paired` runs and reports
+alternating repetitions as described below (see [Tooling](#tooling)); the rules also
+apply to manual runs.
 
 ## Label every number
 
@@ -62,3 +63,37 @@ Functional checks (correctness runs on development hardware) use the same layout
 state in `summary.md` that they are not performance results. Result directories are
 append-only. A run that supersedes an earlier conclusion gets a
 new directory whose summary links to the old one.
+
+## Tooling
+
+`state-bench paired` implements the run conditions, statistics, and denominators above
+for any engine that can be started and stopped from the shell.
+
+```bash
+state-bench paired plan --pairs 5 --order abba        # print the run order
+state-bench paired run run.json -o results/<date>-<name>
+state-bench paired report results/<date>-<name> > results/<date>-<name>/raw/report.json
+```
+
+A run configuration names the server start (and optional stop) command for each arm, a
+readiness command, a load command, an optional device check, the SLO, and the number of
+warm-up requests to drop. Its full format is in the docstring of
+[`bench/paired.py`](../src/state_bench/bench/paired.py). For every run, `run`:
+
+1. records the device check's output;
+2. starts the arm's server in its own process group and waits for readiness;
+3. runs the load command, which writes one JSON record per request
+   ([`bench/records.py`](../src/state_bench/bench/records.py));
+4. stops the server and records the device check again.
+
+`report` drops the warm-up requests, counts the four denominators per run, and compares
+TTFT and end-to-end percentiles and the cached-token share over complete pairs: the
+median per-pair difference with a seeded 95% bootstrap interval. It also gives the median
+of per-request TTFT differences on requests that completed in both runs of a pair. It
+warns about failed runs, a device check without the configured idle pattern, and fewer
+than five complete pairs. `on_time_valid` is reported only when the load command checked
+output correctness; otherwise it is `null` and `on_time` gives the count without it.
+
+The load command is not part of this tool. A replay driver that sends a trace's requests
+on its recorded schedule is planned.
+

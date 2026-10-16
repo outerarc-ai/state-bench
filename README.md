@@ -8,7 +8,7 @@
 
 state-bench studies how LLM inference engines reuse cached state across requests in agentic workloads. Hybrid models such as Qwen3.5 and Nemotron-H keep a recurrent (Mamba/GDN) state alongside the attention KV cache, and a prefix can be resumed only where a state snapshot exists. Where engines place, keep, and evict those snapshots decides how much of a long agent session is recomputed.
 
-The project provides a content-free trace format for agent sessions, a deterministic synthetic trace generator, documentation of current engine behavior, and a simulator that compares snapshot placement policies on a trace. A paired replay harness for OpenAI-compatible servers is in development. Measurements target AMD Instinct GPUs with ROCm; the trace tooling runs on any CPU.
+The project provides a content-free trace format for agent sessions, a deterministic synthetic trace generator, documentation of current engine behavior, and a simulator that compares snapshot placement policies on a trace. A paired-run tool alternates baseline and candidate servers and reports paired statistics; a replay driver for OpenAI-compatible servers is in development. Measurements target AMD Instinct GPUs with ROCm; the trace tooling runs on any CPU.
 
 ## What it provides
 
@@ -56,7 +56,7 @@ uv run state-bench schema > trace.schema.json
 | Snapshot placement simulator | Available (v0: sequential, unlimited KV) |
 | Policies: SGLang current and DCP mask, prompt-end anchor, Marconi-style admission, recent-checkpoint retention, offline reference | Available |
 | Value-based admission and eviction at message boundaries | Available (v0, simulation only) |
-| Paired replay and statistics against live servers | Planned |
+| Paired baseline/candidate runs and statistics (`state-bench paired`) | Available (orchestration, four denominators, bootstrap intervals); live replay driver planned |
 
 ## Documentation
 

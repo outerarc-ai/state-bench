@@ -82,6 +82,7 @@ def _cmd_sim(args: argparse.Namespace) -> int:
         output_roundtrip=not args.no_output_roundtrip,
         first_chunk_cut=args.first_chunk_cut,
         max_states_per_path=args.max_states_per_path,
+        path_cap_min_usage=args.path_cap_min_usage,
     )
     try:
         policies = [get_policy(name) for name in (args.policy or ["sglang_current"])]
@@ -118,6 +119,22 @@ def _cmd_import(args: argparse.Namespace) -> int:
         return 1
     print(f"wrote {args.output}: {n_sessions} sessions, {n_requests} requests", file=sys.stderr)
     return 0
+
+
+def _cmd_paired(args: argparse.Namespace) -> int:
+    from . import bench
+
+    if args.action == "plan":
+        for r in bench.plan(args.pairs, args.order):
+            print(f"{r.run}\tpair {r.pair}\t{r.arm}")
+        return 0
+    if args.action == "run":
+        config = json.loads(open(args.config, encoding="utf-8").read())
+        bench.run(config, args.output, log=lambda m: print(m, file=sys.stderr))
+        return 0
+    rep = bench.report(args.run_dir)
+    print(json.dumps(rep, ensure_ascii=False, indent=2))
+    return 0 if rep["complete_pairs"] > 0 else 1
 
 
 def _cmd_schema(_: argparse.Namespace) -> int:
@@ -174,6 +191,12 @@ def main(argv: list[str] | None = None) -> int:
         help="per-path snapshot cap, as SGLang's --mamba-max-states-per-path (default: none)",
     )
     sm.add_argument(
+        "--path-cap-min-usage",
+        type=float,
+        default=0.0,
+        help="apply the per-path cap only while the state pool is at least this full (0-1)",
+    )
+    sm.add_argument(
         "--no-output-roundtrip",
         action="store_true",
         help="assume replies are not replayed token for token in the next request",
@@ -197,6 +220,20 @@ def main(argv: list[str] | None = None) -> int:
     )
     im.add_argument("--limit", type=int, help="import at most this many traces")
     im.set_defaults(func=_cmd_import)
+
+    pa = sub.add_parser(
+        "paired", help="alternating baseline/candidate runs and their paired report"
+    )
+    pas = pa.add_subparsers(dest="action", required=True)
+    pp = pas.add_parser("plan", help="print the run order")
+    pp.add_argument("--pairs", type=int, default=5)
+    pp.add_argument("--order", choices=["ab", "abba"], default="ab")
+    pr = pas.add_parser("run", help="execute a run configuration (JSON)")
+    pr.add_argument("config")
+    pr.add_argument("-o", "--output", required=True, help="run directory to create")
+    prp = pas.add_parser("report", help="paired report of a run directory (JSON)")
+    prp.add_argument("run_dir")
+    pa.set_defaults(func=_cmd_paired)
 
     sc = sub.add_parser("schema", help="print the JSON Schema for trace records")
     sc.set_defaults(func=_cmd_schema)

@@ -9,6 +9,11 @@
   (`results/2026-10-15-public-trace-idle-gaps`).
 - Simulated policy comparison on 120 recorded kv-cache-tester sessions
   (`results/2026-10-15-sim-policy-public-traces`).
+- `state-bench paired` (`state_bench.bench`): alternating baseline/candidate runs driven by
+  shell commands, per-request records, the four denominators, and paired bootstrap
+  statistics, following `docs/MEASUREMENT.md`.
+- `state-bench sim --path-cap-min-usage` applies the per-path cap only while the state
+  pool is nearly full.
 - `state-bench sim --max-states-per-path` (`SimConfig.max_states_per_path`) models
   SGLang's per-path snapshot cap, and a sweep of it on recorded traces
   (`results/2026-10-16-sim-path-cap`).

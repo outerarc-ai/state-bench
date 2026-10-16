@@ -81,6 +81,10 @@ class SimConfig:
     unlimited. After each new snapshot, the shallowest snapshots on its path beyond the
     cap are evicted, skipping the new one, fork points, and the one the current request
     resumed from."""
+    path_cap_min_usage: float = 0.0
+    """Apply the per-path cap only while the state pool is at least this full (a
+    fraction of ``state_slots``). ``0`` applies it always; with an unlimited pool, any
+    positive value never applies it. Not an SGLang option: models a pressure-gated cap."""
 
     def __post_init__(self) -> None:
         if self.first_chunk_cut not in ("none", "hashed"):
@@ -89,6 +93,8 @@ class SimConfig:
             )
         if self.max_states_per_path is not None and self.max_states_per_path < 1:
             raise ValueError("max_states_per_path must be >= 1 or None")
+        if not 0.0 <= self.path_cap_min_usage <= 1.0:
+            raise ValueError("path_cap_min_usage must be in [0, 1]")
 
     @property
     def checkpoint_grid(self) -> int:
@@ -352,9 +358,16 @@ class Simulation:
         self._kv_insert(owner, pos)
         self.count += 1
         self.result.state_peak = max(self.result.state_peak, self.count)
-        if self.cfg.max_states_per_path is not None:
+        if self.cfg.max_states_per_path is not None and self._cap_active():
             self._cap_path(owner, snap)
         return 1
+
+    def _cap_active(self) -> bool:
+        need = self.cfg.path_cap_min_usage
+        if need <= 0:
+            return True
+        slots = self.cfg.state_slots
+        return slots is not None and slots > 0 and self.count >= need * slots
 
     def _is_fork(self, snap: Snapshot) -> bool:
         """Whether more than one cached sequence continues past ``snap``.
