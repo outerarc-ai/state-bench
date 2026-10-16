@@ -31,7 +31,9 @@ requests seen so far in the snapshot's session (``tau_s`` until a gap has been s
 
 All snapshots of one model have the same size, so ranking by value equals ranking by
 value per byte. The lowest value is evicted first, and a new snapshot worth less than
-every resident one is not admitted. ``gap_factor``, ``tau_s``, and the estimators are
+every resident one is not admitted. ``eviction="lru"`` keeps the placement and evicts
+the least recently used snapshot instead, admitting every new one; it isolates what the
+value ranking contributes. ``gap_factor``, ``tau_s``, and the estimators are
 assumptions; the policy uses only requests that have already arrived.
 """
 
@@ -53,9 +55,13 @@ class BoundaryValue(Policy):
         tau_s: float = 120.0,
         demand: bool = False,
         reply_end: bool = True,
+        eviction: str = "value",
     ) -> None:
         if tau_s <= 0 or gap_factor <= 0:
             raise ValueError("gap_factor and tau_s must be > 0")
+        if eviction not in ("value", "lru"):
+            raise ValueError("eviction must be 'value' or 'lru'")
+        self.eviction = eviction
         self.gap_factor = gap_factor
         self.tau_s = tau_s
         self.demand = demand
@@ -127,4 +133,6 @@ class BoundaryValue(Policy):
         return self.reuse_probability(snap, sim) * snap.pos * math.exp(-idle / horizon)
 
     def priority(self, snap: Snapshot, sim: Simulation) -> tuple:
+        if self.eviction == "lru":
+            return (snap.last_used,)
         return (self.value(snap, sim), snap.last_used)

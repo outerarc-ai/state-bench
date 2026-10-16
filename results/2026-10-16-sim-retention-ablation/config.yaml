@@ -1,0 +1,32 @@
+# Simulated. Recorded public traces; session start times and reply round-trip are
+# assumptions. Not a measurement.
+date: 2026-10-16
+purpose: >-
+  Separate what value-based eviction and reply-end placement each contribute to
+  boundary_value's recompute under state-pool pressure, on recorded agent traces.
+state_bench_commit: the commit that adds this directory
+regenerate: results/2026-10-16-sim-retention-ablation/run.sh
+traces:
+  corpus: kv-cache-tester traces (WEKA), Apache-2.0
+  commit: 94f6046dfd9c0c8bc0cdb24a5aa6579bac8669bf
+  subsets: [trace_0001-0040, trace_0041-0080, trace_0081-0120]   # as in 2026-10-15-sim-policy-public-traces
+  import: state-bench import weka --session-interval 60   # session start times: assumption
+simulator:
+  policies:
+    - sglang_current
+    - prompt_end_anchor                   # prompt ends, LRU eviction
+    - "boundary_value:eviction=lru"       # prompt and reply ends, LRU eviction
+    - "boundary_value:reply_end=false"    # prompt ends, value-based admission and eviction
+    - boundary_value                      # prompt and reply ends, value-based admission and eviction
+    - offline_oracle
+  policy_parameters: otherwise defaults (gap_factor=3, tau_s=120)
+  state_slots: [unlimited, 256, 128, 64, 32, 16]
+  cache_chunk_size: 64
+  page_size: 1
+  chunked_prefill_size: 8192
+  first_chunk_cut: hashed      # assumption
+  track_interval: 256
+  output_roundtrip: [true, false]
+design_history: >-
+  The eviction=lru option was added for this ablation and changes nothing else.
+  reply_end=false existed before this run. No policy was tuned on these traces.

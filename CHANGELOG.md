@@ -9,6 +9,9 @@
   (`results/2026-10-15-public-trace-idle-gaps`).
 - Simulated policy comparison on 120 recorded kv-cache-tester sessions
   (`results/2026-10-15-sim-policy-public-traces`).
+- `boundary_value` accepts `eviction=lru` to keep its placement and evict by recency,
+  and an ablation separating eviction from placement on recorded traces
+  (`results/2026-10-16-sim-retention-ablation`).
 - Simulated pool-size sweep in slots per live session, with state slots per session
   under SGLang's default memory split for six hybrid models
   (`results/2026-10-15-sim-state-pool-pressure`).

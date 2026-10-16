@@ -1,0 +1,797 @@
+{
+ "provenance": "simulated",
+ "cases": [
+  {
+   "subset": 1,
+   "roundtrip": true,
+   "rows": [
+    {
+     "slots": 256,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.056047,
+      "boundary_value": 0.054311,
+      "boundary_value:eviction=lru": 0.056967,
+      "boundary_value:reply_end=false": 0.055032,
+      "sglang_current": 0.049515,
+      "offline_oracle": 0.039252
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 4369,
+      "boundary_value": 7845,
+      "boundary_value:eviction=lru": 7846,
+      "boundary_value:reply_end=false": 4369,
+      "sglang_current": 9800,
+      "offline_oracle": 4153
+     },
+     "value_eviction_cut_with_reply_end": 0.0466,
+     "value_eviction_cut_prompt_end_only": 0.0181
+    },
+    {
+     "slots": 128,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.060933,
+      "boundary_value": 0.058845,
+      "boundary_value:eviction=lru": 0.067489,
+      "boundary_value:reply_end=false": 0.057569,
+      "sglang_current": 0.075305,
+      "offline_oracle": 0.040305
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 4369,
+      "boundary_value": 7848,
+      "boundary_value:eviction=lru": 7854,
+      "boundary_value:reply_end=false": 4369,
+      "sglang_current": 11422,
+      "offline_oracle": 4153
+     },
+     "value_eviction_cut_with_reply_end": 0.1281,
+     "value_eviction_cut_prompt_end_only": 0.0552
+    },
+    {
+     "slots": 64,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.073435,
+      "boundary_value": 0.068054,
+      "boundary_value:eviction=lru": 0.09628,
+      "boundary_value:reply_end=false": 0.064361,
+      "sglang_current": 0.21647,
+      "offline_oracle": 0.044258
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 4369,
+      "boundary_value": 7847,
+      "boundary_value:eviction=lru": 7868,
+      "boundary_value:reply_end=false": 4368,
+      "sglang_current": 20342,
+      "offline_oracle": 4153
+     },
+     "value_eviction_cut_with_reply_end": 0.2932,
+     "value_eviction_cut_prompt_end_only": 0.1236
+    },
+    {
+     "slots": 32,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.107114,
+      "boundary_value": 0.083375,
+      "boundary_value:eviction=lru": 0.144514,
+      "boundary_value:reply_end=false": 0.074818,
+      "sglang_current": 0.429949,
+      "offline_oracle": 0.047378
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 4369,
+      "boundary_value": 7798,
+      "boundary_value:eviction=lru": 7883,
+      "boundary_value:reply_end=false": 4362,
+      "sglang_current": 33827,
+      "offline_oracle": 4176
+     },
+     "value_eviction_cut_with_reply_end": 0.4231,
+     "value_eviction_cut_prompt_end_only": 0.3015
+    },
+    {
+     "slots": 16,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.178686,
+      "boundary_value": 0.123861,
+      "boundary_value:eviction=lru": 0.263055,
+      "boundary_value:reply_end=false": 0.101488,
+      "sglang_current": 0.62027,
+      "offline_oracle": 0.055473
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 4369,
+      "boundary_value": 7359,
+      "boundary_value:eviction=lru": 7929,
+      "boundary_value:reply_end=false": 4272,
+      "sglang_current": 45873,
+      "offline_oracle": 4217
+     },
+     "value_eviction_cut_with_reply_end": 0.5291,
+     "value_eviction_cut_prompt_end_only": 0.432
+    },
+    {
+     "slots": null,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.049708,
+      "boundary_value": 0.046962,
+      "boundary_value:eviction=lru": 0.046962,
+      "boundary_value:reply_end=false": 0.049708,
+      "sglang_current": 0.039216,
+      "offline_oracle": 0.037457
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 4369,
+      "boundary_value": 7838,
+      "boundary_value:eviction=lru": 7838,
+      "boundary_value:reply_end=false": 4369,
+      "sglang_current": 9149,
+      "offline_oracle": 4153
+     },
+     "value_eviction_cut_with_reply_end": 0.0,
+     "value_eviction_cut_prompt_end_only": 0.0
+    }
+   ]
+  },
+  {
+   "subset": 1,
+   "roundtrip": false,
+   "rows": [
+    {
+     "slots": 256,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.056047,
+      "boundary_value": 0.055032,
+      "boundary_value:eviction=lru": 0.056047,
+      "boundary_value:reply_end=false": 0.055032,
+      "sglang_current": 0.050157,
+      "offline_oracle": 0.039569
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 4369,
+      "boundary_value": 4369,
+      "boundary_value:eviction=lru": 4369,
+      "boundary_value:reply_end=false": 4369,
+      "sglang_current": 6763,
+      "offline_oracle": 4257
+     },
+     "value_eviction_cut_with_reply_end": 0.0181,
+     "value_eviction_cut_prompt_end_only": 0.0181
+    },
+    {
+     "slots": 128,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.060933,
+      "boundary_value": 0.057569,
+      "boundary_value:eviction=lru": 0.060933,
+      "boundary_value:reply_end=false": 0.057569,
+      "sglang_current": 0.064069,
+      "offline_oracle": 0.039569
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 4369,
+      "boundary_value": 4369,
+      "boundary_value:eviction=lru": 4369,
+      "boundary_value:reply_end=false": 4369,
+      "sglang_current": 7655,
+      "offline_oracle": 4257
+     },
+     "value_eviction_cut_with_reply_end": 0.0552,
+     "value_eviction_cut_prompt_end_only": 0.0552
+    },
+    {
+     "slots": 64,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.073435,
+      "boundary_value": 0.064361,
+      "boundary_value:eviction=lru": 0.073435,
+      "boundary_value:reply_end=false": 0.064361,
+      "sglang_current": 0.198443,
+      "offline_oracle": 0.039569
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 4369,
+      "boundary_value": 4368,
+      "boundary_value:eviction=lru": 4369,
+      "boundary_value:reply_end=false": 4368,
+      "sglang_current": 16143,
+      "offline_oracle": 4257
+     },
+     "value_eviction_cut_with_reply_end": 0.1236,
+     "value_eviction_cut_prompt_end_only": 0.1236
+    },
+    {
+     "slots": 32,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.107114,
+      "boundary_value": 0.074818,
+      "boundary_value:eviction=lru": 0.107114,
+      "boundary_value:reply_end=false": 0.074818,
+      "sglang_current": 0.403498,
+      "offline_oracle": 0.040347
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 4369,
+      "boundary_value": 4362,
+      "boundary_value:eviction=lru": 4369,
+      "boundary_value:reply_end=false": 4362,
+      "sglang_current": 29106,
+      "offline_oracle": 4272
+     },
+     "value_eviction_cut_with_reply_end": 0.3015,
+     "value_eviction_cut_prompt_end_only": 0.3015
+    },
+    {
+     "slots": 16,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.178686,
+      "boundary_value": 0.101488,
+      "boundary_value:eviction=lru": 0.178686,
+      "boundary_value:reply_end=false": 0.101488,
+      "sglang_current": 0.599708,
+      "offline_oracle": 0.042604
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 4369,
+      "boundary_value": 4272,
+      "boundary_value:eviction=lru": 4369,
+      "boundary_value:reply_end=false": 4272,
+      "sglang_current": 41538,
+      "offline_oracle": 4294
+     },
+     "value_eviction_cut_with_reply_end": 0.432,
+     "value_eviction_cut_prompt_end_only": 0.432
+    },
+    {
+     "slots": null,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.049708,
+      "boundary_value": 0.049708,
+      "boundary_value:eviction=lru": 0.049708,
+      "boundary_value:reply_end=false": 0.049708,
+      "sglang_current": 0.042129,
+      "offline_oracle": 0.039569
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 4369,
+      "boundary_value": 4369,
+      "boundary_value:eviction=lru": 4369,
+      "boundary_value:reply_end=false": 4369,
+      "sglang_current": 6268,
+      "offline_oracle": 4257
+     },
+     "value_eviction_cut_with_reply_end": 0.0,
+     "value_eviction_cut_prompt_end_only": 0.0
+    }
+   ]
+  },
+  {
+   "subset": 2,
+   "roundtrip": true,
+   "rows": [
+    {
+     "slots": 256,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.062387,
+      "boundary_value": 0.058103,
+      "boundary_value:eviction=lru": 0.072338,
+      "boundary_value:reply_end=false": 0.055402,
+      "sglang_current": 0.086136,
+      "offline_oracle": 0.047386
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1711,
+      "boundary_value": 3091,
+      "boundary_value:eviction=lru": 3091,
+      "boundary_value:reply_end=false": 1711,
+      "sglang_current": 5607,
+      "offline_oracle": 1628
+     },
+     "value_eviction_cut_with_reply_end": 0.1968,
+     "value_eviction_cut_prompt_end_only": 0.112
+    },
+    {
+     "slots": 128,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.075979,
+      "boundary_value": 0.066135,
+      "boundary_value:eviction=lru": 0.09327,
+      "boundary_value:reply_end=false": 0.062239,
+      "sglang_current": 0.178613,
+      "offline_oracle": 0.048895
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1711,
+      "boundary_value": 3091,
+      "boundary_value:eviction=lru": 3092,
+      "boundary_value:reply_end=false": 1711,
+      "sglang_current": 8889,
+      "offline_oracle": 1628
+     },
+     "value_eviction_cut_with_reply_end": 0.2909,
+     "value_eviction_cut_prompt_end_only": 0.1808
+    },
+    {
+     "slots": 64,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.098853,
+      "boundary_value": 0.082821,
+      "boundary_value:eviction=lru": 0.124451,
+      "boundary_value:reply_end=false": 0.072887,
+      "sglang_current": 0.399788,
+      "offline_oracle": 0.050369
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1711,
+      "boundary_value": 3089,
+      "boundary_value:eviction=lru": 3100,
+      "boundary_value:reply_end=false": 1711,
+      "sglang_current": 16729,
+      "offline_oracle": 1628
+     },
+     "value_eviction_cut_with_reply_end": 0.3345,
+     "value_eviction_cut_prompt_end_only": 0.2627
+    },
+    {
+     "slots": 32,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.142374,
+      "boundary_value": 0.113129,
+      "boundary_value:eviction=lru": 0.199318,
+      "boundary_value:reply_end=false": 0.091384,
+      "sglang_current": 0.66221,
+      "offline_oracle": 0.054926
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1711,
+      "boundary_value": 3015,
+      "boundary_value:eviction=lru": 3102,
+      "boundary_value:reply_end=false": 1706,
+      "sglang_current": 26035,
+      "offline_oracle": 1629
+     },
+     "value_eviction_cut_with_reply_end": 0.4324,
+     "value_eviction_cut_prompt_end_only": 0.3581
+    },
+    {
+     "slots": 16,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.233025,
+      "boundary_value": 0.200093,
+      "boundary_value:eviction=lru": 0.314243,
+      "boundary_value:reply_end=false": 0.138201,
+      "sglang_current": 0.788996,
+      "offline_oracle": 0.067165
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1711,
+      "boundary_value": 2601,
+      "boundary_value:eviction=lru": 3112,
+      "boundary_value:reply_end=false": 1605,
+      "sglang_current": 30526,
+      "offline_oracle": 1634
+     },
+     "value_eviction_cut_with_reply_end": 0.3633,
+     "value_eviction_cut_prompt_end_only": 0.4069
+    },
+    {
+     "slots": null,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.052846,
+      "boundary_value": 0.050833,
+      "boundary_value:eviction=lru": 0.050833,
+      "boundary_value:reply_end=false": 0.052846,
+      "sglang_current": 0.048579,
+      "offline_oracle": 0.047045
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1711,
+      "boundary_value": 3087,
+      "boundary_value:eviction=lru": 3087,
+      "boundary_value:reply_end=false": 1711,
+      "sglang_current": 4271,
+      "offline_oracle": 1628
+     },
+     "value_eviction_cut_with_reply_end": 0.0,
+     "value_eviction_cut_prompt_end_only": 0.0
+    }
+   ]
+  },
+  {
+   "subset": 2,
+   "roundtrip": false,
+   "rows": [
+    {
+     "slots": 256,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.062387,
+      "boundary_value": 0.055402,
+      "boundary_value:eviction=lru": 0.062387,
+      "boundary_value:reply_end=false": 0.055402,
+      "sglang_current": 0.07935,
+      "offline_oracle": 0.049155
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1711,
+      "boundary_value": 1711,
+      "boundary_value:eviction=lru": 1711,
+      "boundary_value:reply_end=false": 1711,
+      "sglang_current": 4184,
+      "offline_oracle": 1664
+     },
+     "value_eviction_cut_with_reply_end": 0.112,
+     "value_eviction_cut_prompt_end_only": 0.112
+    },
+    {
+     "slots": 128,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.075979,
+      "boundary_value": 0.062239,
+      "boundary_value:eviction=lru": 0.075979,
+      "boundary_value:reply_end=false": 0.062239,
+      "sglang_current": 0.175916,
+      "offline_oracle": 0.049155
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1711,
+      "boundary_value": 1711,
+      "boundary_value:eviction=lru": 1711,
+      "boundary_value:reply_end=false": 1711,
+      "sglang_current": 7609,
+      "offline_oracle": 1664
+     },
+     "value_eviction_cut_with_reply_end": 0.1808,
+     "value_eviction_cut_prompt_end_only": 0.1808
+    },
+    {
+     "slots": 64,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.098853,
+      "boundary_value": 0.072887,
+      "boundary_value:eviction=lru": 0.098853,
+      "boundary_value:reply_end=false": 0.072887,
+      "sglang_current": 0.383067,
+      "offline_oracle": 0.049155
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1711,
+      "boundary_value": 1711,
+      "boundary_value:eviction=lru": 1711,
+      "boundary_value:reply_end=false": 1711,
+      "sglang_current": 14952,
+      "offline_oracle": 1664
+     },
+     "value_eviction_cut_with_reply_end": 0.2627,
+     "value_eviction_cut_prompt_end_only": 0.2627
+    },
+    {
+     "slots": 32,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.142374,
+      "boundary_value": 0.091384,
+      "boundary_value:eviction=lru": 0.142374,
+      "boundary_value:reply_end=false": 0.091384,
+      "sglang_current": 0.637271,
+      "offline_oracle": 0.04934
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1711,
+      "boundary_value": 1706,
+      "boundary_value:eviction=lru": 1711,
+      "boundary_value:reply_end=false": 1706,
+      "sglang_current": 23971,
+      "offline_oracle": 1664
+     },
+     "value_eviction_cut_with_reply_end": 0.3581,
+     "value_eviction_cut_prompt_end_only": 0.3581
+    },
+    {
+     "slots": 16,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.233025,
+      "boundary_value": 0.138201,
+      "boundary_value:eviction=lru": 0.233025,
+      "boundary_value:reply_end=false": 0.138201,
+      "sglang_current": 0.772369,
+      "offline_oracle": 0.059316
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1711,
+      "boundary_value": 1605,
+      "boundary_value:eviction=lru": 1711,
+      "boundary_value:reply_end=false": 1605,
+      "sglang_current": 28744,
+      "offline_oracle": 1662
+     },
+     "value_eviction_cut_with_reply_end": 0.4069,
+     "value_eviction_cut_prompt_end_only": 0.4069
+    },
+    {
+     "slots": null,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.052846,
+      "boundary_value": 0.052846,
+      "boundary_value:eviction=lru": 0.052846,
+      "boundary_value:reply_end=false": 0.052846,
+      "sglang_current": 0.050592,
+      "offline_oracle": 0.049155
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1711,
+      "boundary_value": 1711,
+      "boundary_value:eviction=lru": 1711,
+      "boundary_value:reply_end=false": 1711,
+      "sglang_current": 3155,
+      "offline_oracle": 1664
+     },
+     "value_eviction_cut_with_reply_end": 0.0,
+     "value_eviction_cut_prompt_end_only": 0.0
+    }
+   ]
+  },
+  {
+   "subset": 3,
+   "roundtrip": true,
+   "rows": [
+    {
+     "slots": 256,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.059002,
+      "boundary_value": 0.054368,
+      "boundary_value:eviction=lru": 0.067346,
+      "boundary_value:reply_end=false": 0.052945,
+      "sglang_current": 0.072856,
+      "offline_oracle": 0.041021
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1368,
+      "boundary_value": 2479,
+      "boundary_value:eviction=lru": 2478,
+      "boundary_value:reply_end=false": 1368,
+      "sglang_current": 4445,
+      "offline_oracle": 1295
+     },
+     "value_eviction_cut_with_reply_end": 0.1927,
+     "value_eviction_cut_prompt_end_only": 0.1027
+    },
+    {
+     "slots": 128,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.070872,
+      "boundary_value": 0.064456,
+      "boundary_value:eviction=lru": 0.0878,
+      "boundary_value:reply_end=false": 0.059764,
+      "sglang_current": 0.221221,
+      "offline_oracle": 0.041021
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1368,
+      "boundary_value": 2479,
+      "boundary_value:eviction=lru": 2482,
+      "boundary_value:reply_end=false": 1368,
+      "sglang_current": 9144,
+      "offline_oracle": 1295
+     },
+     "value_eviction_cut_with_reply_end": 0.2659,
+     "value_eviction_cut_prompt_end_only": 0.1567
+    },
+    {
+     "slots": 64,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.090649,
+      "boundary_value": 0.079122,
+      "boundary_value:eviction=lru": 0.122039,
+      "boundary_value:reply_end=false": 0.069269,
+      "sglang_current": 0.366214,
+      "offline_oracle": 0.042272
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1368,
+      "boundary_value": 2476,
+      "boundary_value:eviction=lru": 2486,
+      "boundary_value:reply_end=false": 1367,
+      "sglang_current": 13730,
+      "offline_oracle": 1295
+     },
+     "value_eviction_cut_with_reply_end": 0.3517,
+     "value_eviction_cut_prompt_end_only": 0.2359
+    },
+    {
+     "slots": 32,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.133593,
+      "boundary_value": 0.109312,
+      "boundary_value:eviction=lru": 0.207053,
+      "boundary_value:reply_end=false": 0.086757,
+      "sglang_current": 0.518208,
+      "offline_oracle": 0.044478
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1368,
+      "boundary_value": 2399,
+      "boundary_value:eviction=lru": 2491,
+      "boundary_value:reply_end=false": 1354,
+      "sglang_current": 18544,
+      "offline_oracle": 1295
+     },
+     "value_eviction_cut_with_reply_end": 0.4721,
+     "value_eviction_cut_prompt_end_only": 0.3506
+    },
+    {
+     "slots": 16,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.231642,
+      "boundary_value": 0.198851,
+      "boundary_value:eviction=lru": 0.307879,
+      "boundary_value:reply_end=false": 0.140588,
+      "sglang_current": 0.703485,
+      "offline_oracle": 0.052647
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1368,
+      "boundary_value": 1996,
+      "boundary_value:eviction=lru": 2500,
+      "boundary_value:reply_end=false": 1246,
+      "sglang_current": 24392,
+      "offline_oracle": 1298
+     },
+     "value_eviction_cut_with_reply_end": 0.3541,
+     "value_eviction_cut_prompt_end_only": 0.3931
+    },
+    {
+     "slots": null,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.04777,
+      "boundary_value": 0.045724,
+      "boundary_value:eviction=lru": 0.045724,
+      "boundary_value:reply_end=false": 0.04777,
+      "sglang_current": 0.037551,
+      "offline_oracle": 0.036629
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1368,
+      "boundary_value": 2478,
+      "boundary_value:eviction=lru": 2478,
+      "boundary_value:reply_end=false": 1368,
+      "sglang_current": 3326,
+      "offline_oracle": 1295
+     },
+     "value_eviction_cut_with_reply_end": 0.0,
+     "value_eviction_cut_prompt_end_only": 0.0
+    }
+   ]
+  },
+  {
+   "subset": 3,
+   "roundtrip": false,
+   "rows": [
+    {
+     "slots": 256,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.059002,
+      "boundary_value": 0.052945,
+      "boundary_value:eviction=lru": 0.059002,
+      "boundary_value:reply_end=false": 0.052945,
+      "sglang_current": 0.070806,
+      "offline_oracle": 0.038239
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1368,
+      "boundary_value": 1368,
+      "boundary_value:eviction=lru": 1368,
+      "boundary_value:reply_end=false": 1368,
+      "sglang_current": 3352,
+      "offline_oracle": 1326
+     },
+     "value_eviction_cut_with_reply_end": 0.1027,
+     "value_eviction_cut_prompt_end_only": 0.1027
+    },
+    {
+     "slots": 128,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.070872,
+      "boundary_value": 0.059764,
+      "boundary_value:eviction=lru": 0.070872,
+      "boundary_value:reply_end=false": 0.059764,
+      "sglang_current": 0.213534,
+      "offline_oracle": 0.038239
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1368,
+      "boundary_value": 1368,
+      "boundary_value:eviction=lru": 1368,
+      "boundary_value:reply_end=false": 1368,
+      "sglang_current": 7877,
+      "offline_oracle": 1326
+     },
+     "value_eviction_cut_with_reply_end": 0.1567,
+     "value_eviction_cut_prompt_end_only": 0.1567
+    },
+    {
+     "slots": 64,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.090649,
+      "boundary_value": 0.069269,
+      "boundary_value:eviction=lru": 0.090649,
+      "boundary_value:reply_end=false": 0.069269,
+      "sglang_current": 0.359734,
+      "offline_oracle": 0.038239
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1368,
+      "boundary_value": 1367,
+      "boundary_value:eviction=lru": 1368,
+      "boundary_value:reply_end=false": 1367,
+      "sglang_current": 12508,
+      "offline_oracle": 1326
+     },
+     "value_eviction_cut_with_reply_end": 0.2359,
+     "value_eviction_cut_prompt_end_only": 0.2359
+    },
+    {
+     "slots": 32,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.133593,
+      "boundary_value": 0.086757,
+      "boundary_value:eviction=lru": 0.133593,
+      "boundary_value:reply_end=false": 0.086757,
+      "sglang_current": 0.513541,
+      "offline_oracle": 0.038239
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1368,
+      "boundary_value": 1354,
+      "boundary_value:eviction=lru": 1368,
+      "boundary_value:reply_end=false": 1354,
+      "sglang_current": 17381,
+      "offline_oracle": 1326
+     },
+     "value_eviction_cut_with_reply_end": 0.3506,
+     "value_eviction_cut_prompt_end_only": 0.3506
+    },
+    {
+     "slots": 16,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.231642,
+      "boundary_value": 0.140588,
+      "boundary_value:eviction=lru": 0.231642,
+      "boundary_value:reply_end=false": 0.140588,
+      "sglang_current": 0.699642,
+      "offline_oracle": 0.048153
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1368,
+      "boundary_value": 1246,
+      "boundary_value:eviction=lru": 1368,
+      "boundary_value:reply_end=false": 1246,
+      "sglang_current": 23255,
+      "offline_oracle": 1328
+     },
+     "value_eviction_cut_with_reply_end": 0.3931,
+     "value_eviction_cut_prompt_end_only": 0.3931
+    },
+    {
+     "slots": null,
+     "recompute_ratio": {
+      "prompt_end_anchor": 0.04777,
+      "boundary_value": 0.04777,
+      "boundary_value:eviction=lru": 0.04777,
+      "boundary_value:reply_end=false": 0.04777,
+      "sglang_current": 0.039579,
+      "offline_oracle": 0.038239
+     },
+     "snapshots_written": {
+      "prompt_end_anchor": 1368,
+      "boundary_value": 1368,
+      "boundary_value:eviction=lru": 1368,
+      "boundary_value:reply_end=false": 1368,
+      "sglang_current": 2362,
+      "offline_oracle": 1326
+     },
+     "value_eviction_cut_with_reply_end": 0.0,
+     "value_eviction_cut_prompt_end_only": 0.0
+    }
+   ]
+  }
+ ]
+}

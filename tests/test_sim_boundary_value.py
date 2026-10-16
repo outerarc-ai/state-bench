@@ -147,3 +147,21 @@ def test_prompt_end_and_reply_end_both_stay_live_until_next_turn():
     sim.now = 1
     p.plan_prefill(a2, 256, 256, sim.cfg)
     assert p.reuse_probability(reply_end, sim) == pytest.approx(1 / 4)
+
+
+def test_lru_eviction_option_keeps_placement_and_ranks_by_recency():
+    segs = (Segment("system", 0, 100), Segment("user", 100, 150))
+    trace = make_trace(("A", toks(1, 150), 1, None, None), segments=[segs])
+    a = trace.requests[0]
+    p = BoundaryValue(eviction="lru")
+    sim = bound(trace, p)
+    assert p.plan_prefill(a, 0, 0, sim.cfg) == [64, 128]
+    old = Snapshot(("k", "x"), 64, a.req_id, a.req_id, created=1, last_used=1)
+    new = Snapshot(("k", "y"), 128, a.req_id, a.req_id, created=2, last_used=5)
+    assert p.priority(old, sim) == (1,)
+    assert p.priority(old, sim) < p.priority(new, sim)
+
+
+def test_rejects_unknown_eviction():
+    with pytest.raises(ValueError):
+        BoundaryValue(eviction="random")
