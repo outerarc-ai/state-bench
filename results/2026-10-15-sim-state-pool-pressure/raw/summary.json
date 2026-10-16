@@ -1,0 +1,839 @@
+{
+ "provenance": "simulated",
+ "cases": [
+  {
+   "subset": 1,
+   "roundtrip": true,
+   "live_sessions_mean": 15.07,
+   "rows": [
+    {
+     "slots": 16,
+     "slots_per_live_session": 1.06,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.178686,
+     "sglang_current_ratio": 0.62027,
+     "boundary_value_ratio": 0.122819,
+     "offline_oracle_ratio": 0.055473,
+     "boundary_value_cut_vs_best": 0.3127,
+     "best_existing_gap_to_oracle_pp": 12.321
+    },
+    {
+     "slots": 24,
+     "slots_per_live_session": 1.59,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.123509,
+     "sglang_current_ratio": 0.486883,
+     "boundary_value_ratio": 0.093612,
+     "offline_oracle_ratio": 0.050407,
+     "boundary_value_cut_vs_best": 0.2421,
+     "best_existing_gap_to_oracle_pp": 7.31
+    },
+    {
+     "slots": 32,
+     "slots_per_live_session": 2.12,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.100877,
+     "sglang_current_ratio": 0.429949,
+     "boundary_value_ratio": 0.081089,
+     "offline_oracle_ratio": 0.047378,
+     "boundary_value_cut_vs_best": 0.1962,
+     "best_existing_gap_to_oracle_pp": 5.35
+    },
+    {
+     "slots": 48,
+     "slots_per_live_session": 3.19,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.075311,
+     "sglang_current_ratio": 0.321375,
+     "boundary_value_ratio": 0.069161,
+     "offline_oracle_ratio": 0.045559,
+     "boundary_value_cut_vs_best": 0.0817,
+     "best_existing_gap_to_oracle_pp": 2.975
+    },
+    {
+     "slots": 64,
+     "slots_per_live_session": 4.25,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.065702,
+     "sglang_current_ratio": 0.21647,
+     "boundary_value_ratio": 0.063908,
+     "offline_oracle_ratio": 0.044258,
+     "boundary_value_cut_vs_best": 0.0273,
+     "best_existing_gap_to_oracle_pp": 2.144
+    },
+    {
+     "slots": 96,
+     "slots_per_live_session": 6.37,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.05795,
+     "sglang_current_ratio": 0.12375,
+     "boundary_value_ratio": 0.058377,
+     "offline_oracle_ratio": 0.041461,
+     "boundary_value_cut_vs_best": -0.0074,
+     "best_existing_gap_to_oracle_pp": 1.649
+    },
+    {
+     "slots": 128,
+     "slots_per_live_session": 8.49,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.054508,
+     "sglang_current_ratio": 0.075305,
+     "boundary_value_ratio": 0.055445,
+     "offline_oracle_ratio": 0.040305,
+     "boundary_value_cut_vs_best": -0.0172,
+     "best_existing_gap_to_oracle_pp": 1.42
+    },
+    {
+     "slots": 192,
+     "slots_per_live_session": 12.74,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.05156,
+     "sglang_current_ratio": 0.056324,
+     "boundary_value_ratio": 0.051058,
+     "offline_oracle_ratio": 0.039649,
+     "boundary_value_cut_vs_best": 0.0097,
+     "best_existing_gap_to_oracle_pp": 1.191
+    },
+    {
+     "slots": 256,
+     "slots_per_live_session": 16.99,
+     "best_existing": "sglang_current",
+     "best_existing_ratio": 0.049515,
+     "sglang_current_ratio": 0.049515,
+     "boundary_value_ratio": 0.050155,
+     "offline_oracle_ratio": 0.039252,
+     "boundary_value_cut_vs_best": -0.0129,
+     "best_existing_gap_to_oracle_pp": 1.026
+    },
+    {
+     "slots": 384,
+     "slots_per_live_session": 25.48,
+     "best_existing": "sglang_current",
+     "best_existing_ratio": 0.0464,
+     "sglang_current_ratio": 0.0464,
+     "boundary_value_ratio": 0.048626,
+     "offline_oracle_ratio": 0.038974,
+     "boundary_value_cut_vs_best": -0.048,
+     "best_existing_gap_to_oracle_pp": 0.743
+    },
+    {
+     "slots": 512,
+     "slots_per_live_session": 33.97,
+     "best_existing": "sglang_current",
+     "best_existing_ratio": 0.044616,
+     "sglang_current_ratio": 0.044616,
+     "boundary_value_ratio": 0.047544,
+     "offline_oracle_ratio": 0.038028,
+     "boundary_value_cut_vs_best": -0.0656,
+     "best_existing_gap_to_oracle_pp": 0.659
+    },
+    {
+     "slots": null,
+     "slots_per_live_session": null,
+     "best_existing": "sglang_current",
+     "best_existing_ratio": 0.039216,
+     "sglang_current_ratio": 0.039216,
+     "boundary_value_ratio": 0.042891,
+     "offline_oracle_ratio": 0.037457,
+     "boundary_value_cut_vs_best": -0.0937,
+     "best_existing_gap_to_oracle_pp": 0.176
+    }
+   ]
+  },
+  {
+   "subset": 1,
+   "roundtrip": false,
+   "live_sessions_mean": 15.07,
+   "rows": [
+    {
+     "slots": 16,
+     "slots_per_live_session": 1.06,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.178686,
+     "sglang_current_ratio": 0.599708,
+     "boundary_value_ratio": 0.100335,
+     "offline_oracle_ratio": 0.042604,
+     "boundary_value_cut_vs_best": 0.4385,
+     "best_existing_gap_to_oracle_pp": 13.608
+    },
+    {
+     "slots": 24,
+     "slots_per_live_session": 1.59,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.132422,
+     "sglang_current_ratio": 0.463294,
+     "boundary_value_ratio": 0.082093,
+     "offline_oracle_ratio": 0.040823,
+     "boundary_value_cut_vs_best": 0.3801,
+     "best_existing_gap_to_oracle_pp": 9.16
+    },
+    {
+     "slots": 32,
+     "slots_per_live_session": 2.12,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.107114,
+     "sglang_current_ratio": 0.403498,
+     "boundary_value_ratio": 0.073076,
+     "offline_oracle_ratio": 0.040347,
+     "boundary_value_cut_vs_best": 0.3178,
+     "best_existing_gap_to_oracle_pp": 6.677
+    },
+    {
+     "slots": 48,
+     "slots_per_live_session": 3.19,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.08376,
+     "sglang_current_ratio": 0.29457,
+     "boundary_value_ratio": 0.065672,
+     "offline_oracle_ratio": 0.039751,
+     "boundary_value_cut_vs_best": 0.216,
+     "best_existing_gap_to_oracle_pp": 4.401
+    },
+    {
+     "slots": 64,
+     "slots_per_live_session": 4.25,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.073435,
+     "sglang_current_ratio": 0.198443,
+     "boundary_value_ratio": 0.060349,
+     "offline_oracle_ratio": 0.039569,
+     "boundary_value_cut_vs_best": 0.1782,
+     "best_existing_gap_to_oracle_pp": 3.387
+    },
+    {
+     "slots": 96,
+     "slots_per_live_session": 6.37,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.065655,
+     "sglang_current_ratio": 0.098802,
+     "boundary_value_ratio": 0.055037,
+     "offline_oracle_ratio": 0.039569,
+     "boundary_value_cut_vs_best": 0.1617,
+     "best_existing_gap_to_oracle_pp": 2.609
+    },
+    {
+     "slots": 128,
+     "slots_per_live_session": 8.49,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.060933,
+     "sglang_current_ratio": 0.064069,
+     "boundary_value_ratio": 0.053118,
+     "offline_oracle_ratio": 0.039569,
+     "boundary_value_cut_vs_best": 0.1283,
+     "best_existing_gap_to_oracle_pp": 2.136
+    },
+    {
+     "slots": 192,
+     "slots_per_live_session": 12.74,
+     "best_existing": "sglang_current",
+     "best_existing_ratio": 0.052755,
+     "sglang_current_ratio": 0.052755,
+     "boundary_value_ratio": 0.052042,
+     "offline_oracle_ratio": 0.039569,
+     "boundary_value_cut_vs_best": 0.0135,
+     "best_existing_gap_to_oracle_pp": 1.319
+    },
+    {
+     "slots": 256,
+     "slots_per_live_session": 16.99,
+     "best_existing": "pin_recent",
+     "best_existing_ratio": 0.050038,
+     "sglang_current_ratio": 0.050157,
+     "boundary_value_ratio": 0.050393,
+     "offline_oracle_ratio": 0.039569,
+     "boundary_value_cut_vs_best": -0.0071,
+     "best_existing_gap_to_oracle_pp": 1.047
+    },
+    {
+     "slots": 384,
+     "slots_per_live_session": 25.48,
+     "best_existing": "sglang_current",
+     "best_existing_ratio": 0.047967,
+     "sglang_current_ratio": 0.047967,
+     "boundary_value_ratio": 0.049488,
+     "offline_oracle_ratio": 0.039569,
+     "boundary_value_cut_vs_best": -0.0317,
+     "best_existing_gap_to_oracle_pp": 0.84
+    },
+    {
+     "slots": 512,
+     "slots_per_live_session": 33.97,
+     "best_existing": "sglang_current",
+     "best_existing_ratio": 0.046754,
+     "sglang_current_ratio": 0.046754,
+     "boundary_value_ratio": 0.047868,
+     "offline_oracle_ratio": 0.039569,
+     "boundary_value_cut_vs_best": -0.0238,
+     "best_existing_gap_to_oracle_pp": 0.718
+    },
+    {
+     "slots": null,
+     "slots_per_live_session": null,
+     "best_existing": "sglang_current",
+     "best_existing_ratio": 0.042129,
+     "sglang_current_ratio": 0.042129,
+     "boundary_value_ratio": 0.045629,
+     "offline_oracle_ratio": 0.039569,
+     "boundary_value_cut_vs_best": -0.0831,
+     "best_existing_gap_to_oracle_pp": 0.256
+    }
+   ]
+  },
+  {
+   "subset": 2,
+   "roundtrip": true,
+   "live_sessions_mean": 15.75,
+   "rows": [
+    {
+     "slots": 16,
+     "slots_per_live_session": 1.02,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.233025,
+     "sglang_current_ratio": 0.788996,
+     "boundary_value_ratio": 0.200093,
+     "offline_oracle_ratio": 0.067165,
+     "boundary_value_cut_vs_best": 0.1413,
+     "best_existing_gap_to_oracle_pp": 16.586
+    },
+    {
+     "slots": 24,
+     "slots_per_live_session": 1.52,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.17379,
+     "sglang_current_ratio": 0.701674,
+     "boundary_value_ratio": 0.148436,
+     "offline_oracle_ratio": 0.058375,
+     "boundary_value_cut_vs_best": 0.1459,
+     "best_existing_gap_to_oracle_pp": 11.541
+    },
+    {
+     "slots": 32,
+     "slots_per_live_session": 2.03,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.137974,
+     "sglang_current_ratio": 0.66221,
+     "boundary_value_ratio": 0.113129,
+     "offline_oracle_ratio": 0.054926,
+     "boundary_value_cut_vs_best": 0.1801,
+     "best_existing_gap_to_oracle_pp": 8.305
+    },
+    {
+     "slots": 48,
+     "slots_per_live_session": 3.05,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.104731,
+     "sglang_current_ratio": 0.524289,
+     "boundary_value_ratio": 0.088453,
+     "offline_oracle_ratio": 0.051126,
+     "boundary_value_cut_vs_best": 0.1554,
+     "best_existing_gap_to_oracle_pp": 5.361
+    },
+    {
+     "slots": 64,
+     "slots_per_live_session": 4.06,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.097923,
+     "sglang_current_ratio": 0.399788,
+     "boundary_value_ratio": 0.082585,
+     "offline_oracle_ratio": 0.050369,
+     "boundary_value_cut_vs_best": 0.1566,
+     "best_existing_gap_to_oracle_pp": 4.755
+    },
+    {
+     "slots": 96,
+     "slots_per_live_session": 6.1,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.086199,
+     "sglang_current_ratio": 0.256694,
+     "boundary_value_ratio": 0.072076,
+     "offline_oracle_ratio": 0.048895,
+     "boundary_value_cut_vs_best": 0.1638,
+     "best_existing_gap_to_oracle_pp": 3.73
+    },
+    {
+     "slots": 128,
+     "slots_per_live_session": 8.13,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.075634,
+     "sglang_current_ratio": 0.178613,
+     "boundary_value_ratio": 0.064511,
+     "offline_oracle_ratio": 0.048895,
+     "boundary_value_cut_vs_best": 0.1471,
+     "best_existing_gap_to_oracle_pp": 2.674
+    },
+    {
+     "slots": 192,
+     "slots_per_live_session": 12.19,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.072194,
+     "sglang_current_ratio": 0.104227,
+     "boundary_value_ratio": 0.060921,
+     "offline_oracle_ratio": 0.048895,
+     "boundary_value_cut_vs_best": 0.1561,
+     "best_existing_gap_to_oracle_pp": 2.33
+    },
+    {
+     "slots": 256,
+     "slots_per_live_session": 16.25,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.062387,
+     "sglang_current_ratio": 0.086136,
+     "boundary_value_ratio": 0.057725,
+     "offline_oracle_ratio": 0.047386,
+     "boundary_value_cut_vs_best": 0.0747,
+     "best_existing_gap_to_oracle_pp": 1.5
+    },
+    {
+     "slots": 384,
+     "slots_per_live_session": 24.38,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.058785,
+     "sglang_current_ratio": 0.071345,
+     "boundary_value_ratio": 0.052572,
+     "offline_oracle_ratio": 0.047386,
+     "boundary_value_cut_vs_best": 0.1057,
+     "best_existing_gap_to_oracle_pp": 1.14
+    },
+    {
+     "slots": 512,
+     "slots_per_live_session": 32.51,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.05704,
+     "sglang_current_ratio": 0.064815,
+     "boundary_value_ratio": 0.051321,
+     "offline_oracle_ratio": 0.047386,
+     "boundary_value_cut_vs_best": 0.1003,
+     "best_existing_gap_to_oracle_pp": 0.965
+    },
+    {
+     "slots": null,
+     "slots_per_live_session": null,
+     "best_existing": "sglang_current",
+     "best_existing_ratio": 0.048579,
+     "sglang_current_ratio": 0.048579,
+     "boundary_value_ratio": 0.049624,
+     "offline_oracle_ratio": 0.047045,
+     "boundary_value_cut_vs_best": -0.0215,
+     "best_existing_gap_to_oracle_pp": 0.153
+    }
+   ]
+  },
+  {
+   "subset": 2,
+   "roundtrip": false,
+   "live_sessions_mean": 15.75,
+   "rows": [
+    {
+     "slots": 16,
+     "slots_per_live_session": 1.02,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.233025,
+     "sglang_current_ratio": 0.772369,
+     "boundary_value_ratio": 0.138201,
+     "offline_oracle_ratio": 0.059316,
+     "boundary_value_cut_vs_best": 0.4069,
+     "best_existing_gap_to_oracle_pp": 17.371
+    },
+    {
+     "slots": 24,
+     "slots_per_live_session": 1.52,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.17379,
+     "sglang_current_ratio": 0.693413,
+     "boundary_value_ratio": 0.106151,
+     "offline_oracle_ratio": 0.052543,
+     "boundary_value_cut_vs_best": 0.3892,
+     "best_existing_gap_to_oracle_pp": 12.125
+    },
+    {
+     "slots": 32,
+     "slots_per_live_session": 2.03,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.142374,
+     "sglang_current_ratio": 0.637271,
+     "boundary_value_ratio": 0.091195,
+     "offline_oracle_ratio": 0.04934,
+     "boundary_value_cut_vs_best": 0.3595,
+     "best_existing_gap_to_oracle_pp": 9.303
+    },
+    {
+     "slots": 48,
+     "slots_per_live_session": 3.05,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.107119,
+     "sglang_current_ratio": 0.483948,
+     "boundary_value_ratio": 0.080189,
+     "offline_oracle_ratio": 0.049155,
+     "boundary_value_cut_vs_best": 0.2514,
+     "best_existing_gap_to_oracle_pp": 5.796
+    },
+    {
+     "slots": 64,
+     "slots_per_live_session": 4.06,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.098853,
+     "sglang_current_ratio": 0.383067,
+     "boundary_value_ratio": 0.071736,
+     "offline_oracle_ratio": 0.049155,
+     "boundary_value_cut_vs_best": 0.2743,
+     "best_existing_gap_to_oracle_pp": 4.97
+    },
+    {
+     "slots": 96,
+     "slots_per_live_session": 6.1,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.087315,
+     "sglang_current_ratio": 0.237523,
+     "boundary_value_ratio": 0.06399,
+     "offline_oracle_ratio": 0.049155,
+     "boundary_value_cut_vs_best": 0.2671,
+     "best_existing_gap_to_oracle_pp": 3.816
+    },
+    {
+     "slots": 128,
+     "slots_per_live_session": 8.13,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.075979,
+     "sglang_current_ratio": 0.175916,
+     "boundary_value_ratio": 0.06038,
+     "offline_oracle_ratio": 0.049155,
+     "boundary_value_cut_vs_best": 0.2053,
+     "best_existing_gap_to_oracle_pp": 2.682
+    },
+    {
+     "slots": 192,
+     "slots_per_live_session": 12.19,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.072194,
+     "sglang_current_ratio": 0.097404,
+     "boundary_value_ratio": 0.055966,
+     "offline_oracle_ratio": 0.049155,
+     "boundary_value_cut_vs_best": 0.2248,
+     "best_existing_gap_to_oracle_pp": 2.304
+    },
+    {
+     "slots": 256,
+     "slots_per_live_session": 16.25,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.062387,
+     "sglang_current_ratio": 0.07935,
+     "boundary_value_ratio": 0.054063,
+     "offline_oracle_ratio": 0.049155,
+     "boundary_value_cut_vs_best": 0.1334,
+     "best_existing_gap_to_oracle_pp": 1.323
+    },
+    {
+     "slots": 384,
+     "slots_per_live_session": 24.38,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.058785,
+     "sglang_current_ratio": 0.068394,
+     "boundary_value_ratio": 0.052759,
+     "offline_oracle_ratio": 0.049155,
+     "boundary_value_cut_vs_best": 0.1025,
+     "best_existing_gap_to_oracle_pp": 0.963
+    },
+    {
+     "slots": 512,
+     "slots_per_live_session": 32.51,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.058647,
+     "sglang_current_ratio": 0.063023,
+     "boundary_value_ratio": 0.052649,
+     "offline_oracle_ratio": 0.049155,
+     "boundary_value_cut_vs_best": 0.1023,
+     "best_existing_gap_to_oracle_pp": 0.949
+    },
+    {
+     "slots": null,
+     "slots_per_live_session": null,
+     "best_existing": "sglang_current",
+     "best_existing_ratio": 0.050592,
+     "sglang_current_ratio": 0.050592,
+     "boundary_value_ratio": 0.051632,
+     "offline_oracle_ratio": 0.049155,
+     "boundary_value_cut_vs_best": -0.0206,
+     "best_existing_gap_to_oracle_pp": 0.144
+    }
+   ]
+  },
+  {
+   "subset": 3,
+   "roundtrip": true,
+   "live_sessions_mean": 14.08,
+   "rows": [
+    {
+     "slots": 16,
+     "slots_per_live_session": 1.14,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.231642,
+     "sglang_current_ratio": 0.703485,
+     "boundary_value_ratio": 0.198851,
+     "offline_oracle_ratio": 0.052647,
+     "boundary_value_cut_vs_best": 0.1416,
+     "best_existing_gap_to_oracle_pp": 17.899
+    },
+    {
+     "slots": 24,
+     "slots_per_live_session": 1.7,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.173759,
+     "sglang_current_ratio": 0.620673,
+     "boundary_value_ratio": 0.141351,
+     "offline_oracle_ratio": 0.045796,
+     "boundary_value_cut_vs_best": 0.1865,
+     "best_existing_gap_to_oracle_pp": 12.796
+    },
+    {
+     "slots": 32,
+     "slots_per_live_session": 2.27,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.126733,
+     "sglang_current_ratio": 0.518208,
+     "boundary_value_ratio": 0.109312,
+     "offline_oracle_ratio": 0.044478,
+     "boundary_value_cut_vs_best": 0.1375,
+     "best_existing_gap_to_oracle_pp": 8.226
+    },
+    {
+     "slots": 48,
+     "slots_per_live_session": 3.41,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.099714,
+     "sglang_current_ratio": 0.421719,
+     "boundary_value_ratio": 0.085995,
+     "offline_oracle_ratio": 0.042755,
+     "boundary_value_cut_vs_best": 0.1376,
+     "best_existing_gap_to_oracle_pp": 5.696
+    },
+    {
+     "slots": 64,
+     "slots_per_live_session": 4.55,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.08623,
+     "sglang_current_ratio": 0.366214,
+     "boundary_value_ratio": 0.075497,
+     "offline_oracle_ratio": 0.042272,
+     "boundary_value_cut_vs_best": 0.1245,
+     "best_existing_gap_to_oracle_pp": 4.396
+    },
+    {
+     "slots": 96,
+     "slots_per_live_session": 6.82,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.073934,
+     "sglang_current_ratio": 0.292529,
+     "boundary_value_ratio": 0.066599,
+     "offline_oracle_ratio": 0.042272,
+     "boundary_value_cut_vs_best": 0.0992,
+     "best_existing_gap_to_oracle_pp": 3.166
+    },
+    {
+     "slots": 128,
+     "slots_per_live_session": 9.09,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.067111,
+     "sglang_current_ratio": 0.221221,
+     "boundary_value_ratio": 0.061532,
+     "offline_oracle_ratio": 0.041021,
+     "boundary_value_cut_vs_best": 0.0831,
+     "best_existing_gap_to_oracle_pp": 2.609
+    },
+    {
+     "slots": 192,
+     "slots_per_live_session": 13.64,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.061519,
+     "sglang_current_ratio": 0.086123,
+     "boundary_value_ratio": 0.056108,
+     "offline_oracle_ratio": 0.041021,
+     "boundary_value_cut_vs_best": 0.088,
+     "best_existing_gap_to_oracle_pp": 2.05
+    },
+    {
+     "slots": 256,
+     "slots_per_live_session": 18.18,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.053812,
+     "sglang_current_ratio": 0.072856,
+     "boundary_value_ratio": 0.051064,
+     "offline_oracle_ratio": 0.041021,
+     "boundary_value_cut_vs_best": 0.0511,
+     "best_existing_gap_to_oracle_pp": 1.279
+    },
+    {
+     "slots": 384,
+     "slots_per_live_session": 27.27,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.051985,
+     "sglang_current_ratio": 0.065143,
+     "boundary_value_ratio": 0.04967,
+     "offline_oracle_ratio": 0.041021,
+     "boundary_value_cut_vs_best": 0.0445,
+     "best_existing_gap_to_oracle_pp": 1.096
+    },
+    {
+     "slots": 512,
+     "slots_per_live_session": 36.36,
+     "best_existing": "marconi_admission",
+     "best_existing_ratio": 0.04738,
+     "sglang_current_ratio": 0.055745,
+     "boundary_value_ratio": 0.046293,
+     "offline_oracle_ratio": 0.037346,
+     "boundary_value_cut_vs_best": 0.0229,
+     "best_existing_gap_to_oracle_pp": 1.003
+    },
+    {
+     "slots": null,
+     "slots_per_live_session": null,
+     "best_existing": "sglang_current",
+     "best_existing_ratio": 0.037551,
+     "sglang_current_ratio": 0.037551,
+     "boundary_value_ratio": 0.043396,
+     "offline_oracle_ratio": 0.036629,
+     "boundary_value_cut_vs_best": -0.1557,
+     "best_existing_gap_to_oracle_pp": 0.092
+    }
+   ]
+  },
+  {
+   "subset": 3,
+   "roundtrip": false,
+   "live_sessions_mean": 14.08,
+   "rows": [
+    {
+     "slots": 16,
+     "slots_per_live_session": 1.14,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.231642,
+     "sglang_current_ratio": 0.699642,
+     "boundary_value_ratio": 0.140588,
+     "offline_oracle_ratio": 0.048153,
+     "boundary_value_cut_vs_best": 0.3931,
+     "best_existing_gap_to_oracle_pp": 18.349
+    },
+    {
+     "slots": 24,
+     "slots_per_live_session": 1.7,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.173759,
+     "sglang_current_ratio": 0.610687,
+     "boundary_value_ratio": 0.101509,
+     "offline_oracle_ratio": 0.039469,
+     "boundary_value_cut_vs_best": 0.4158,
+     "best_existing_gap_to_oracle_pp": 13.429
+    },
+    {
+     "slots": 32,
+     "slots_per_live_session": 2.27,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.133593,
+     "sglang_current_ratio": 0.513541,
+     "boundary_value_ratio": 0.08582,
+     "offline_oracle_ratio": 0.038239,
+     "boundary_value_cut_vs_best": 0.3576,
+     "best_existing_gap_to_oracle_pp": 9.535
+    },
+    {
+     "slots": 48,
+     "slots_per_live_session": 3.41,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.112432,
+     "sglang_current_ratio": 0.417342,
+     "boundary_value_ratio": 0.074866,
+     "offline_oracle_ratio": 0.038239,
+     "boundary_value_cut_vs_best": 0.3341,
+     "best_existing_gap_to_oracle_pp": 7.419
+    },
+    {
+     "slots": 64,
+     "slots_per_live_session": 4.55,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.090649,
+     "sglang_current_ratio": 0.359734,
+     "boundary_value_ratio": 0.067006,
+     "offline_oracle_ratio": 0.038239,
+     "boundary_value_cut_vs_best": 0.2608,
+     "best_existing_gap_to_oracle_pp": 5.241
+    },
+    {
+     "slots": 96,
+     "slots_per_live_session": 6.82,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.079616,
+     "sglang_current_ratio": 0.280368,
+     "boundary_value_ratio": 0.061891,
+     "offline_oracle_ratio": 0.038239,
+     "boundary_value_cut_vs_best": 0.2226,
+     "best_existing_gap_to_oracle_pp": 4.138
+    },
+    {
+     "slots": 128,
+     "slots_per_live_session": 9.09,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.070872,
+     "sglang_current_ratio": 0.213534,
+     "boundary_value_ratio": 0.057015,
+     "offline_oracle_ratio": 0.038239,
+     "boundary_value_cut_vs_best": 0.1955,
+     "best_existing_gap_to_oracle_pp": 3.263
+    },
+    {
+     "slots": 192,
+     "slots_per_live_session": 13.64,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.067659,
+     "sglang_current_ratio": 0.081885,
+     "boundary_value_ratio": 0.052545,
+     "offline_oracle_ratio": 0.038239,
+     "boundary_value_cut_vs_best": 0.2234,
+     "best_existing_gap_to_oracle_pp": 2.942
+    },
+    {
+     "slots": 256,
+     "slots_per_live_session": 18.18,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.059002,
+     "sglang_current_ratio": 0.070806,
+     "boundary_value_ratio": 0.050903,
+     "offline_oracle_ratio": 0.038239,
+     "boundary_value_cut_vs_best": 0.1373,
+     "best_existing_gap_to_oracle_pp": 2.076
+    },
+    {
+     "slots": 384,
+     "slots_per_live_session": 27.27,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.055988,
+     "sglang_current_ratio": 0.05807,
+     "boundary_value_ratio": 0.048285,
+     "offline_oracle_ratio": 0.038239,
+     "boundary_value_cut_vs_best": 0.1376,
+     "best_existing_gap_to_oracle_pp": 1.775
+    },
+    {
+     "slots": 512,
+     "slots_per_live_session": 36.36,
+     "best_existing": "prompt_end_anchor",
+     "best_existing_ratio": 0.050301,
+     "sglang_current_ratio": 0.053514,
+     "boundary_value_ratio": 0.047263,
+     "offline_oracle_ratio": 0.038239,
+     "boundary_value_cut_vs_best": 0.0604,
+     "best_existing_gap_to_oracle_pp": 1.206
+    },
+    {
+     "slots": null,
+     "slots_per_live_session": null,
+     "best_existing": "sglang_current",
+     "best_existing_ratio": 0.039579,
+     "sglang_current_ratio": 0.039579,
+     "boundary_value_ratio": 0.045443,
+     "offline_oracle_ratio": 0.038239,
+     "boundary_value_cut_vs_best": -0.1482,
+     "best_existing_gap_to_oracle_pp": 0.134
+    }
+   ]
+  }
+ ]
+}

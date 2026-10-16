@@ -1,0 +1,30 @@
+# Simulated, plus sizes derived from published model configs. Not a measurement.
+date: 2026-10-15
+purpose: >-
+  Find the state-pool size, in snapshot slots per live session, below which the choice
+  of snapshot policy matters on recorded agent traces, and where SGLang's default memory
+  split places real models.
+state_bench_commit: the commit that adds this directory
+regenerate: results/2026-10-15-sim-state-pool-pressure/run.sh
+traces:
+  corpus: kv-cache-tester traces (WEKA), Apache-2.0
+  commit: 94f6046dfd9c0c8bc0cdb24a5aa6579bac8669bf
+  subsets: [trace_0001-0040, trace_0041-0080, trace_0081-0120]   # as in 2026-10-15-sim-policy-public-traces
+  import: state-bench import weka --session-interval 60   # session start times: assumption
+  live_sessions: raw/subset-<n>-live.json   # request-weighted mean 14.1-15.8 (derived)
+simulator:
+  policies: [sglang_current, prompt_end_anchor, marconi_admission, pin_recent, boundary_value, "boundary_value:demand=true", offline_oracle]
+  policy_parameters: defaults (pin_recent k=4 active_s=120; boundary_value gap_factor=3 tau_s=120)
+  state_slots: [unlimited, 512, 384, 256, 192, 128, 96, 64, 48, 32, 24, 16]
+  cache_chunk_size: 64
+  page_size: 1
+  chunked_prefill_size: 8192
+  first_chunk_cut: hashed      # assumption
+  track_interval: 256
+  output_roundtrip: [true, false]
+deployment:
+  models: models.json   # published configs (spec), rechecked 2026-10-16
+  sglang_commit: c4870d98
+  mamba_full_memory_ratio: 0.9   # SGLang default
+  contexts: [10000, 30000, 109143, 297200]   # last two: p50 and p90 context at an idle gap (results/2026-10-15-public-trace-idle-gaps)
+design_history: No policy was changed for or after this run.

@@ -1,0 +1,91 @@
+{
+  "provenance": "derived from published model configs and SGLang's default split",
+  "mamba_full_memory_ratio": 0.9,
+  "running_request_slots": 5,
+  "models": [
+    {
+      "model": "NVIDIA-Nemotron-Nano-9B-v2",
+      "tp": 1,
+      "kv_bytes_per_token_per_gpu": 16384,
+      "state_bytes_per_slot_per_gpu": 143548416,
+      "state_slot_in_kv_tokens": 8762,
+      "slots_per_session": {
+        "10000": 1.0,
+        "30000": 3.1,
+        "109143": 11.2,
+        "297200": 30.5
+      },
+      "context_for_one_slot_per_session": 9735
+    },
+    {
+      "model": "Qwen3.5-9B",
+      "tp": 1,
+      "kv_bytes_per_token_per_gpu": 32768,
+      "state_bytes_per_slot_per_gpu": 51511296,
+      "state_slot_in_kv_tokens": 1572,
+      "slots_per_session": {
+        "10000": 5.7,
+        "30000": 17.2,
+        "109143": 62.5,
+        "297200": 170.2
+      },
+      "context_for_one_slot_per_session": 1747
+    },
+    {
+      "model": "Qwen3.5-27B",
+      "tp": 1,
+      "kv_bytes_per_token_per_gpu": 65536,
+      "state_bytes_per_slot_per_gpu": 153944064,
+      "state_slot_in_kv_tokens": 2349,
+      "slots_per_session": {
+        "10000": 3.8,
+        "30000": 11.5,
+        "109143": 41.8,
+        "297200": 113.9
+      },
+      "context_for_one_slot_per_session": 2610
+    },
+    {
+      "model": "Qwen3.5-35B-A3B",
+      "tp": 1,
+      "kv_bytes_per_token_per_gpu": 20480,
+      "state_bytes_per_slot_per_gpu": 64389120,
+      "state_slot_in_kv_tokens": 3144,
+      "slots_per_session": {
+        "10000": 2.9,
+        "30000": 8.6,
+        "109143": 31.2,
+        "297200": 85.1
+      },
+      "context_for_one_slot_per_session": 3494
+    },
+    {
+      "model": "Qwen3.5-122B-A10B",
+      "tp": 2,
+      "kv_bytes_per_token_per_gpu": 12288,
+      "state_bytes_per_slot_per_gpu": 76824576,
+      "state_slot_in_kv_tokens": 6252,
+      "slots_per_session": {
+        "10000": 1.4,
+        "30000": 4.3,
+        "109143": 15.7,
+        "297200": 42.8
+      },
+      "context_for_one_slot_per_session": 6947
+    },
+    {
+      "model": "Qwen3.5-397B-A17B",
+      "tp": 8,
+      "kv_bytes_per_token_per_gpu": 15360,
+      "state_bytes_per_slot_per_gpu": 24007680,
+      "state_slot_in_kv_tokens": 1563,
+      "slots_per_session": {
+        "10000": 5.8,
+        "30000": 17.3,
+        "109143": 62.8,
+        "297200": 171.1
+      },
+      "context_for_one_slot_per_session": 1737
+    }
+  ]
+}

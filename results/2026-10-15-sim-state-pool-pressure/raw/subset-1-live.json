@@ -1,0 +1,9 @@
+{
+  "provenance": "derived from the trace",
+  "sessions": 40,
+  "requests": 1711,
+  "live_sessions_mean": 15.75,
+  "live_sessions_p10": 4,
+  "live_sessions_p50": 16,
+  "live_sessions_p90": 24
+}

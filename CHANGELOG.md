@@ -9,6 +9,9 @@
   (`results/2026-10-15-public-trace-idle-gaps`).
 - Simulated policy comparison on 120 recorded kv-cache-tester sessions
   (`results/2026-10-15-sim-policy-public-traces`).
+- Simulated pool-size sweep in slots per live session, with state slots per session
+  under SGLang's default memory split for six hybrid models
+  (`results/2026-10-15-sim-state-pool-pressure`).
 - Restore-versus-recompute estimate for a hybrid model on MI300X, from spec values and
   stated assumptions (`results/2026-10-15-restore-vs-recompute-estimate`).
 - Snapshot placement simulator (`state-bench sim`, `state_bench.sim`) with a state pool,
