@@ -10,8 +10,11 @@ import argparse
 import json
 import statistics
 import sys
+import time
+import urllib.request
 
 from . import __version__
+from .replay import check_prefix_fidelity, write_replay
 from .traces import schema, synth
 
 
@@ -124,6 +127,69 @@ def _cmd_schema(_: argparse.Namespace) -> int:
     return 0
 
 
+def _probe_model_family(upstream: str) -> str:
+    try:
+        with urllib.request.urlopen(upstream.rstrip("/") + "/v1/models", timeout=5) as r:
+            obj = json.loads(r.read())
+        models = obj.get("data")
+        if models and isinstance(models[0].get("id"), str):
+            return models[0]["id"]
+    except Exception:  # best effort
+        pass
+    return "unknown"
+
+
+def _cmd_capture(args: argparse.Namespace) -> int:
+    try:
+        from transformers import AutoTokenizer
+    except ImportError:
+        print(
+            "capture requires the transformers dependency: uv pip install 'state-bench[capture]'",
+            file=sys.stderr,
+        )
+        return 2
+    from .capture import OpenAIRecorder, ProxyServer, TraceSink
+
+    tokenizer = AutoTokenizer.from_pretrained(args.tokenizer)
+    model_family = args.model_family or _probe_model_family(args.upstream)
+    sink = TraceSink(model_family=model_family, source="proxy:openai", license_=args.license)
+    recorder = OpenAIRecorder(sink, tokenizer, model_family=model_family)
+    server = ProxyServer(args.upstream, recorder, host=args.host, port=args.port)
+    server.start()
+    print(
+        f"capturing {args.upstream} via http://{args.host}:{server.port} -> {args.output} "
+        f"(Ctrl-C to stop)",
+        file=sys.stderr,
+    )
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.stop()
+    sink.finish(args.output)
+    print(f"wrote {args.output}", file=sys.stderr)
+    return 0
+
+
+def _cmd_materialize(args: argparse.Namespace) -> int:
+    trace = schema.load_trace(args.path, check=False)
+    mat = write_replay(trace, args.output, vocab_size=args.vocab_size)
+    if not args.no_check:
+        errs = check_prefix_fidelity(trace, mat)
+        if errs:
+            print("fidelity check failed:\n" + "\n".join(errs[:20]), file=sys.stderr)
+            return 1
+    n_tok = sum(len(r.prompt) for r in mat.requests)
+    print(
+        f"wrote {args.output}: {len(mat.requests)} requests, {n_tok} tokens "
+        f"(vocab {mat.vocab_size}; token identity provenance: assumption)",
+        file=sys.stderr,
+    )
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(
         prog="state-bench",
@@ -197,6 +263,33 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser(
         "synth", help="generate a synthetic trace (see `state-bench synth -h`)", add_help=False
     )
+
+    c = sub.add_parser(
+        "capture",
+        help="record a trace by proxying an OpenAI-compatible server (provenance: measured)",
+    )
+    c.add_argument("--upstream", required=True, help="base URL of the serving system")
+    c.add_argument("--tokenizer", required=True, help="HF tokenizer path or model id")
+    c.add_argument("-o", "--output", required=True, help="trace output path (JSONL)")
+    c.add_argument("--host", default="127.0.0.1", help="bind address (default 127.0.0.1)")
+    c.add_argument("--port", type=int, default=0, help="bind port (default: ephemeral)")
+    c.add_argument("--license", required=True, help="license statement for the captured data")
+    c.add_argument(
+        "--model-family", default=None, help="override model_family (default: probe /v1/models)"
+    )
+    c.set_defaults(func=_cmd_capture)
+
+    mt = sub.add_parser(
+        "materialize",
+        help="turn a trace into a token-id stream for replay (token identity provenance: assumption)",
+    )
+    mt.add_argument("path", help="input trace (JSONL)")
+    mt.add_argument("-o", "--output", required=True, help="Autobench JSONL output path")
+    mt.add_argument(
+        "--vocab-size", type=int, required=True, help="target tokenizer vocabulary size"
+    )
+    mt.add_argument("--no-check", action="store_true", help="skip the prefix-fidelity check")
+    mt.set_defaults(func=_cmd_materialize)
 
     args, rest = p.parse_known_args(argv)
     if args.cmd == "synth":

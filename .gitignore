@@ -7,3 +7,6 @@ __pycache__/
 build/
 dist/
 *.jsonl
+# Discussion artifacts from working sessions (ELI5 pages, scratch notes).
+eli5-*.html
+.trae-html-share-packages/

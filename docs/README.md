@@ -9,6 +9,7 @@ Start with the [project overview](../README.md), then choose a guide:
 | [Synthetic traces](SYNTHETIC_TRACES.md) | Generate sessions with controlled reuse patterns |
 | [Measurement protocol](MEASUREMENT.md) | Produce, label, and report results that others can reproduce |
 | [Snapshot placement simulator](SIMULATOR.md) | Compare snapshot policies and state-pool sizes on a trace |
+| [Replay materialization](REPLAY.md) | Turn a content-free trace into a token stream that reproduces its prefix reuse |
 | [SGLang Mamba checkpoints](SGLANG_MAMBA_CHECKPOINTS.md) | Where SGLang places, inserts, and evicts recurrent-state checkpoints |
 | [Related work](RELATED_WORK.md) | Upstream discussions and implementations, with their status |
 
