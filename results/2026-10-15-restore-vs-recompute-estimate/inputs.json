@@ -15,15 +15,15 @@
     },
     "attention_layers": {
       "value": 4,
-      "source": "assumption from the published config; consistent with the measured KV size"
+      "source": "spec: the published config.json (hybrid_override_pattern has 4 attention layers); checked 2026-10-17 in results/2026-10-17-strix-halo-prefill-curve"
     },
     "q_heads": {
       "value": 40,
-      "source": "assumption from the published config"
+      "source": "spec: the published config.json (hybrid_override_pattern has 4 attention layers); checked 2026-10-17 in results/2026-10-17-strix-halo-prefill-curve"
     },
     "head_dim": {
       "value": 128,
-      "source": "assumption from the published config"
+      "source": "spec: the published config.json (hybrid_override_pattern has 4 attention layers); checked 2026-10-17 in results/2026-10-17-strix-halo-prefill-curve"
     }
   },
   "gpu": {

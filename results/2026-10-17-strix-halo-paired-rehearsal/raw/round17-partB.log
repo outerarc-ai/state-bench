@@ -1,0 +1,53 @@
+=== part B
+main: line 9:   818 Killed                  SGLANG_DISABLE_LEAN_ATTENTION=1 nohup python3 -m sglang.launch_server --model-path "$MD" --host 127.0.0.1 --port 39116 --max-mamba-cache-size 16 --mem-fraction-static "$MEM" --attention-backend triton --mamba-backend triton --moe-runner-backend triton --chunked-prefill-size 8192 --max-running-requests 1 --context-length 70000 > server16.log 2>&1
+=== part B sizing
+# available 122.8 GiB, footprint 15.0 GiB, fraction 0.122
+=== part B run 2026-10-17T00:20:03+00:00
+run 0 pair 0 baseline: starting server
+run 0 pair 0 baseline: ok
+run 1 pair 0 candidate: starting server
+run 1 pair 0 candidate: ok
+run 2 pair 1 candidate: starting server
+run 2 pair 1 candidate: ok
+run 3 pair 1 baseline: starting server
+run 3 pair 1 baseline: ok
+run 4 pair 2 baseline: starting server
+run 4 pair 2 baseline: ok
+run 5 pair 2 candidate: starting server
+run 5 pair 2 candidate: ok
+run 6 pair 3 candidate: starting server
+run 6 pair 3 candidate: ok
+run 7 pair 3 baseline: starting server
+run 7 pair 3 baseline: ok
+run 8 pair 4 baseline: starting server
+run 8 pair 4 baseline: ok
+run 9 pair 4 candidate: starting server
+run 9 pair 4 candidate: ok
+report exit 0
+complete pairs 5 warnings []
+0 0 baseline ok {'offered': 46, 'admitted': 46, 'completed': 46, 'on_time': 46, 'on_time_valid': None, 'validity_checked': False} {'ttft_p50_s': 1.0738, 'ttft_p90_s': 2.1917, 'e2e_p50_s': 2.0684, 'e2e_p90_s': 3.0204, 'cached_token_share': 0.3731}
+1 0 candidate ok {'offered': 46, 'admitted': 46, 'completed': 46, 'on_time': 46, 'on_time_valid': None, 'validity_checked': False} {'ttft_p50_s': 1.0773, 'ttft_p90_s': 2.2031, 'e2e_p50_s': 2.0659, 'e2e_p90_s': 3.0266, 'cached_token_share': 0.3874}
+2 1 candidate ok {'offered': 46, 'admitted': 46, 'completed': 46, 'on_time': 46, 'on_time_valid': None, 'validity_checked': False} {'ttft_p50_s': 1.0799, 'ttft_p90_s': 2.2009, 'e2e_p50_s': 2.0718, 'e2e_p90_s': 3.0256, 'cached_token_share': 0.3874}
+3 1 baseline ok {'offered': 46, 'admitted': 46, 'completed': 46, 'on_time': 46, 'on_time_valid': None, 'validity_checked': False} {'ttft_p50_s': 1.083, 'ttft_p90_s': 2.2108, 'e2e_p50_s': 2.0758, 'e2e_p90_s': 3.0312, 'cached_token_share': 0.3731}
+4 2 baseline ok {'offered': 46, 'admitted': 46, 'completed': 46, 'on_time': 46, 'on_time_valid': None, 'validity_checked': False} {'ttft_p50_s': 1.0882, 'ttft_p90_s': 2.22, 'e2e_p50_s': 2.0825, 'e2e_p90_s': 3.0442, 'cached_token_share': 0.3731}
+5 2 candidate ok {'offered': 46, 'admitted': 46, 'completed': 46, 'on_time': 46, 'on_time_valid': None, 'validity_checked': False} {'ttft_p50_s': 1.0713, 'ttft_p90_s': 2.196, 'e2e_p50_s': 2.0617, 'e2e_p90_s': 3.0166, 'cached_token_share': 0.3874}
+6 3 candidate ok {'offered': 46, 'admitted': 46, 'completed': 46, 'on_time': 46, 'on_time_valid': None, 'validity_checked': False} {'ttft_p50_s': 1.0721, 'ttft_p90_s': 2.1875, 'e2e_p50_s': 2.067, 'e2e_p90_s': 3.01, 'cached_token_share': 0.3874}
+7 3 baseline ok {'offered': 46, 'admitted': 46, 'completed': 46, 'on_time': 46, 'on_time_valid': None, 'validity_checked': False} {'ttft_p50_s': 1.0789, 'ttft_p90_s': 2.1941, 'e2e_p50_s': 2.0715, 'e2e_p90_s': 3.0245, 'cached_token_share': 0.3731}
+8 4 baseline ok {'offered': 46, 'admitted': 46, 'completed': 46, 'on_time': 46, 'on_time_valid': None, 'validity_checked': False} {'ttft_p50_s': 1.0727, 'ttft_p90_s': 2.1948, 'e2e_p50_s': 2.0649, 'e2e_p90_s': 3.0267, 'cached_token_share': 0.3731}
+9 4 candidate ok {'offered': 46, 'admitted': 46, 'completed': 46, 'on_time': 46, 'on_time_valid': None, 'validity_checked': False} {'ttft_p50_s': 1.0699, 'ttft_p90_s': 2.1892, 'e2e_p50_s': 2.0632, 'e2e_p90_s': 3.0198, 'cached_token_share': 0.3874}
+ttft_p50_s no significant difference median diff -0.0031 CI -0.017 0.0035
+ttft_p90_s no significant difference median diff -0.0066 CI -0.0241 0.0114
+e2e_p50_s candidate lower median diff -0.004 CI -0.0208 -0.0017
+e2e_p90_s no significant difference median diff -0.0069 CI -0.0276 0.0062
+cached_token_share candidate higher median diff 0.0144 CI 0.0144 0.0144
+matched_ttft_diff_s no significant difference median diff -0.0014 CI -0.0149 0.0055
+--- server log errors (if any)
+12:[2026-10-17 00:20:19] Failed to import amdsmi with ModuleNotFoundError("No module named 'amdsmi'")
+20:-->[History]: Traceback (most recent call last):
+50:-->Traceback (most recent call last):
+54:    raise CalledProcessError(retcode, process.args,
+59:-->Traceback (most recent call last):
+67:    raise RuntimeError(message) from e
+68:-->Runtimeerror: Error building extension 'module_custom_all_reduce': [1/3] /opt/rocm-7.2.4/bin/hipcc  -DWITH_HIP -D_GLIBCXX_USE_CXX11_ABI=1 -DTORCH_EXTENSION_NAME=module_custom_all_reduce
+72:/sgl-workspace/aiter/csrc/include/custom_all_reduce.cuh:3765:9: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+--- per-path cap evidence

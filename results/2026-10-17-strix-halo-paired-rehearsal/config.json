@@ -1,0 +1,111 @@
+{
+  "name": "strix-halo-paired-rehearsal",
+  "pairs": 5,
+  "order": "abba",
+  "warmup_requests": 2,
+  "slo": {
+    "ttft_s": 10.0
+  },
+  "device_check": [
+    "sh",
+    "-c",
+    "rocm-smi --showpids 2>/dev/null | grep -E '^[0-9]' | head -20; echo checked"
+  ],
+  "ready": {
+    "command": [
+      "curl",
+      "-sf",
+      "-m",
+      "2",
+      "http://127.0.0.1:39117/health"
+    ],
+    "timeout_s": 900,
+    "interval_s": 5
+  },
+  "load": [
+    "python3",
+    "load.py",
+    "http://127.0.0.1:39117",
+    "{records}",
+    "--sessions",
+    "8",
+    "--turns",
+    "6"
+  ],
+  "arms": {
+    "baseline": {
+      "start": [
+        "python3",
+        "-m",
+        "sglang.launch_server",
+        "--model-path",
+        "/models/Qwen/Qwen3.5-4B",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "39117",
+        "--mem-fraction-static",
+        "0.122",
+        "--max-mamba-cache-size",
+        "16",
+        "--max-running-requests",
+        "2",
+        "--mamba-radix-cache-strategy",
+        "extra_buffer",
+        "--mamba-track-interval",
+        "128",
+        "--attention-backend",
+        "triton",
+        "--linear-attn-backend",
+        "triton",
+        "--mamba-backend",
+        "triton",
+        "--chunked-prefill-size",
+        "2048",
+        "--context-length",
+        "16384"
+      ],
+      "env": {
+        "SGLANG_DISABLE_LEAN_ATTENTION": "1"
+      }
+    },
+    "candidate": {
+      "start": [
+        "python3",
+        "-m",
+        "sglang.launch_server",
+        "--model-path",
+        "/models/Qwen/Qwen3.5-4B",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "39117",
+        "--mem-fraction-static",
+        "0.122",
+        "--max-mamba-cache-size",
+        "16",
+        "--max-running-requests",
+        "2",
+        "--mamba-radix-cache-strategy",
+        "extra_buffer",
+        "--mamba-track-interval",
+        "128",
+        "--attention-backend",
+        "triton",
+        "--linear-attn-backend",
+        "triton",
+        "--mamba-backend",
+        "triton",
+        "--chunked-prefill-size",
+        "2048",
+        "--context-length",
+        "16384",
+        "--mamba-max-states-per-path",
+        "2"
+      ],
+      "env": {
+        "SGLANG_DISABLE_LEAN_ATTENTION": "1"
+      }
+    }
+  }
+}

@@ -27,7 +27,7 @@ of `new` tokens over `L` cached ones; recomputing prefills `L + new` from scratc
 | Parameters `P` | 8.84 B | derived from measured weight memory (gfx1151) |
 | KV per token `s_kv` | 16 KiB | measured KV allocation (gfx1151) |
 | State snapshot `S_state` | 136.9 MiB | derived from the model config |
-| Attention layers × query heads × head dim | 4 × 40 × 128 | assumption (published config) |
+| Attention layers × query heads × head dim | 4 × 40 × 128 | spec: config.json, checked 2026-10-17 ([prefill curve](../2026-10-17-strix-halo-prefill-curve/summary.md)) |
 | Peak dense bf16 | 1,307 TFLOPS | spec (MI300X) |
 | Prefill MFU | 30% and 50% | assumption |
 | Host memory → HBM | 50 GB/s, 1 ms fixed | assumption (PCIe Gen5 x16 spec: 64 GB/s per direction) |
@@ -86,3 +86,12 @@ incremental prefill, 0.1–0.3 s; see the raw output.
 ```bash
 results/2026-10-15-restore-vs-recompute-estimate/run.sh
 ```
+
+## Follow-up (2026-10-17)
+
+The model's attention shape matches the assumption above. A prefill curve on gfx1151
+([2026-10-17-strix-halo-prefill-curve](../2026-10-17-strix-halo-prefill-curve/summary.md))
+shows the attention term about 1.25 times as expensive, relative to the rest of the model,
+as its FLOPs imply. If MI300X behaved the same, recompute at 109k tokens would take about 5%
+longer than estimated here, which favors restoring further. The estimate itself is
+unchanged until the curve is measured on MI300X.

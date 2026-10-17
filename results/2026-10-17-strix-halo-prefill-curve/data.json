@@ -1,0 +1,109 @@
+{
+  "provenance": {
+    "times": "measured (shared gfx1151, end-to-end request time, 1 output token, prefix cache flushed before each request)",
+    "flops": "derived from spec config and a derived parameter count",
+    "fit": "derived"
+  },
+  "rows": [
+    {
+      "prompt_tokens": 1024,
+      "times_s": [
+        0.9218,
+        0.9409,
+        0.9535
+      ],
+      "median_s": 0.9409,
+      "us_per_token": 918.84765625,
+      "fit_s": 0.9770698191951551,
+      "model_tflops": 18.147311616,
+      "effective_tflops": 19.287184202359445
+    },
+    {
+      "prompt_tokens": 2048,
+      "times_s": [
+        1.9623,
+        1.9130999999999998,
+        1.9302000000000001
+      ],
+      "median_s": 1.9302000000000001,
+      "us_per_token": 942.4804687500001,
+      "fit_s": 1.9959104923601099,
+      "model_tflops": 36.38052257792,
+      "effective_tflops": 18.84805853171692
+    },
+    {
+      "prompt_tokens": 4096,
+      "times_s": [
+        3.9399,
+        3.9901999999999997,
+        4.0269
+      ],
+      "median_s": 3.9901999999999997,
+      "us_per_token": 974.1699218749999,
+      "fit_s": 4.0515985883788765,
+      "model_tflops": 73.10464253952,
+      "effective_tflops": 18.321047200521278
+    },
+    {
+      "prompt_tokens": 8192,
+      "times_s": [
+        8.2395,
+        8.4093,
+        8.406
+      ],
+      "median_s": 8.406,
+      "us_per_token": 1026.123046875,
+      "fit_s": 8.235001779171835,
+      "model_tflops": 147.58367461376,
+      "effective_tflops": 17.55694439849631
+    },
+    {
+      "prompt_tokens": 16384,
+      "times_s": [
+        17.0332,
+        16.8287,
+        16.9761
+      ],
+      "median_s": 16.9761,
+      "us_per_token": 1036.138916015625,
+      "fit_s": 16.88991615577946,
+      "model_tflops": 300.6649073664,
+      "effective_tflops": 17.711070703306415
+    },
+    {
+      "prompt_tokens": 32768,
+      "times_s": [
+        35.0875,
+        35.237300000000005,
+        35.416199999999996
+      ],
+      "median_s": 35.237300000000005,
+      "us_per_token": 1075.3570556640627,
+      "fit_s": 35.35217688908154,
+      "model_tflops": 623.32004728832,
+      "effective_tflops": 17.68921135524912
+    },
+    {
+      "prompt_tokens": 65536,
+      "times_s": [
+        76.9074,
+        76.455,
+        77.2344
+      ],
+      "median_s": 76.9074,
+      "us_per_token": 1173.5137939453125,
+      "fit_s": 76.88642627603303,
+      "model_tflops": 1334.60102479872,
+      "effective_tflops": 17.353349935100134
+    }
+  ],
+  "fit": {
+    "c_s": -0.03576860407351402,
+    "a_s_per_token": 0.000986169236641139,
+    "b_s_per_token2": 2.8620957833698144e-09
+  },
+  "per_token_growth": {
+    "measured": 1.2771581730258263,
+    "flop_model": 1.1491035947216746
+  }
+}

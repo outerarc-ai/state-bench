@@ -12,6 +12,11 @@
 - `state-bench paired` (`state_bench.bench`): alternating baseline/candidate runs driven by
   shell commands, per-request records, the four denominators, and paired bootstrap
   statistics, following `docs/MEASUREMENT.md`.
+- Prefill time against prompt length for Nemotron-Nano-9B-v2 on gfx1151, compared with
+  the restore-versus-recompute estimate's FLOP model
+  (`results/2026-10-17-strix-halo-prefill-curve`).
+- A rehearsal of `state-bench paired` against SGLang servers on gfx1151, Qwen3.5-4B with and
+  without the per-path cap (`results/2026-10-17-strix-halo-paired-rehearsal`).
 - `envs/mi300x`: scripts for one MI300X in SGLang's ROCm image: environment record and
   idle check, the Nemotron-H on ROCm reproduction, single-GPU hybrid-cache correctness
   checks, paired per-path cap runs at several state-pool sizes, prefill curve, and

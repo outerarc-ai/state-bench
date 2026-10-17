@@ -1,0 +1,291 @@
+{
+  "provenance": "measured",
+  "name": "strix-halo-paired-rehearsal",
+  "slo": {
+    "ttft_s": 10.0
+  },
+  "warmup_requests": 2,
+  "complete_pairs": 5,
+  "runs": [
+    {
+      "run": 0,
+      "pair": 0,
+      "arm": "baseline",
+      "status": "ok",
+      "denominators": {
+        "offered": 46,
+        "admitted": 46,
+        "completed": 46,
+        "on_time": 46,
+        "on_time_valid": null,
+        "validity_checked": false
+      },
+      "metrics": {
+        "ttft_p50_s": 1.0738126180040126,
+        "ttft_p90_s": 2.1917123569983232,
+        "e2e_p50_s": 2.0684124850013177,
+        "e2e_p90_s": 3.020403427995916,
+        "cached_token_share": 0.37306284907235027
+      }
+    },
+    {
+      "run": 1,
+      "pair": 0,
+      "arm": "candidate",
+      "status": "ok",
+      "denominators": {
+        "offered": 46,
+        "admitted": 46,
+        "completed": 46,
+        "on_time": 46,
+        "on_time_valid": null,
+        "validity_checked": false
+      },
+      "metrics": {
+        "ttft_p50_s": 1.0772895745030837,
+        "ttft_p90_s": 2.20311343150388,
+        "e2e_p50_s": 2.065861709001183,
+        "e2e_p90_s": 3.026620325501426,
+        "cached_token_share": 0.3874430249727162
+      }
+    },
+    {
+      "run": 2,
+      "pair": 1,
+      "arm": "candidate",
+      "status": "ok",
+      "denominators": {
+        "offered": 46,
+        "admitted": 46,
+        "completed": 46,
+        "on_time": 46,
+        "on_time_valid": null,
+        "validity_checked": false
+      },
+      "metrics": {
+        "ttft_p50_s": 1.0798988129972713,
+        "ttft_p90_s": 2.200915204000921,
+        "e2e_p50_s": 2.0717950020007265,
+        "e2e_p90_s": 3.025614180998673,
+        "cached_token_share": 0.3874430249727162
+      }
+    },
+    {
+      "run": 3,
+      "pair": 1,
+      "arm": "baseline",
+      "status": "ok",
+      "denominators": {
+        "offered": 46,
+        "admitted": 46,
+        "completed": 46,
+        "on_time": 46,
+        "on_time_valid": null,
+        "validity_checked": false
+      },
+      "metrics": {
+        "ttft_p50_s": 1.0830353554993053,
+        "ttft_p90_s": 2.2107737570004247,
+        "e2e_p50_s": 2.0758314020022226,
+        "e2e_p90_s": 3.0311612655023055,
+        "cached_token_share": 0.37306284907235027
+      }
+    },
+    {
+      "run": 4,
+      "pair": 2,
+      "arm": "baseline",
+      "status": "ok",
+      "denominators": {
+        "offered": 46,
+        "admitted": 46,
+        "completed": 46,
+        "on_time": 46,
+        "on_time_valid": null,
+        "validity_checked": false
+      },
+      "metrics": {
+        "ttft_p50_s": 1.0882392494968371,
+        "ttft_p90_s": 2.2200112435020856,
+        "e2e_p50_s": 2.0824941325008695,
+        "e2e_p90_s": 3.044195206999575,
+        "cached_token_share": 0.37306284907235027
+      }
+    },
+    {
+      "run": 5,
+      "pair": 2,
+      "arm": "candidate",
+      "status": "ok",
+      "denominators": {
+        "offered": 46,
+        "admitted": 46,
+        "completed": 46,
+        "on_time": 46,
+        "on_time_valid": null,
+        "validity_checked": false
+      },
+      "metrics": {
+        "ttft_p50_s": 1.0712854399971548,
+        "ttft_p90_s": 2.1959526725004253,
+        "e2e_p50_s": 2.061652057498577,
+        "e2e_p90_s": 3.0166321540018544,
+        "cached_token_share": 0.3874430249727162
+      }
+    },
+    {
+      "run": 6,
+      "pair": 3,
+      "arm": "candidate",
+      "status": "ok",
+      "denominators": {
+        "offered": 46,
+        "admitted": 46,
+        "completed": 46,
+        "on_time": 46,
+        "on_time_valid": null,
+        "validity_checked": false
+      },
+      "metrics": {
+        "ttft_p50_s": 1.0720838395027386,
+        "ttft_p90_s": 2.1875028374997783,
+        "e2e_p50_s": 2.0670300615020096,
+        "e2e_p90_s": 3.009970377999707,
+        "cached_token_share": 0.3874430249727162
+      }
+    },
+    {
+      "run": 7,
+      "pair": 3,
+      "arm": "baseline",
+      "status": "ok",
+      "denominators": {
+        "offered": 46,
+        "admitted": 46,
+        "completed": 46,
+        "on_time": 46,
+        "on_time_valid": null,
+        "validity_checked": false
+      },
+      "metrics": {
+        "ttft_p50_s": 1.0789402804985002,
+        "ttft_p90_s": 2.19405884599837,
+        "e2e_p50_s": 2.0714961049998237,
+        "e2e_p90_s": 3.024537595501897,
+        "cached_token_share": 0.37306284907235027
+      }
+    },
+    {
+      "run": 8,
+      "pair": 4,
+      "arm": "baseline",
+      "status": "ok",
+      "denominators": {
+        "offered": 46,
+        "admitted": 46,
+        "completed": 46,
+        "on_time": 46,
+        "on_time_valid": null,
+        "validity_checked": false
+      },
+      "metrics": {
+        "ttft_p50_s": 1.0727343809994636,
+        "ttft_p90_s": 2.194753823499923,
+        "e2e_p50_s": 2.064943380999466,
+        "e2e_p90_s": 3.0266782420003437,
+        "cached_token_share": 0.37306284907235027
+      }
+    },
+    {
+      "run": 9,
+      "pair": 4,
+      "arm": "candidate",
+      "status": "ok",
+      "denominators": {
+        "offered": 46,
+        "admitted": 46,
+        "completed": 46,
+        "on_time": 46,
+        "on_time_valid": null,
+        "validity_checked": false
+      },
+      "metrics": {
+        "ttft_p50_s": 1.0699082789979002,
+        "ttft_p90_s": 2.1891965830000117,
+        "e2e_p50_s": 2.063249849998101,
+        "e2e_p90_s": 3.0197755939989293,
+        "cached_token_share": 0.3874430249727162
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "metric": "ttft_p50_s",
+      "pairs": 5,
+      "baseline_median": 1.0789402804985002,
+      "candidate_median": 1.0720838395027386,
+      "diff_median": -0.00313654250203399,
+      "ci_low": -0.016953809499682393,
+      "ci_high": 0.0034769564990710933,
+      "relative_diff_median": -0.0028960665837062805,
+      "verdict": "no significant difference"
+    },
+    {
+      "metric": "ttft_p90_s",
+      "pairs": 5,
+      "baseline_median": 2.194753823499923,
+      "candidate_median": 2.1959526725004253,
+      "diff_median": -0.0065560084985918365,
+      "ci_low": -0.02405857100166031,
+      "ci_high": 0.011401074505556608,
+      "relative_diff_median": -0.0029880732280945883,
+      "verdict": "no significant difference"
+    },
+    {
+      "metric": "e2e_p50_s",
+      "pairs": 5,
+      "baseline_median": 2.0714961049998237,
+      "candidate_median": 2.065861709001183,
+      "diff_median": -0.004036400001496077,
+      "ci_low": -0.020842075002292404,
+      "ci_high": -0.001693531001365045,
+      "relative_diff_median": -0.001944473909394957,
+      "verdict": "candidate lower"
+    },
+    {
+      "metric": "e2e_p90_s",
+      "pairs": 5,
+      "baseline_median": 3.0266782420003437,
+      "candidate_median": 3.0197755939989293,
+      "diff_median": -0.006902648001414491,
+      "ci_low": -0.02756305299772066,
+      "ci_high": 0.006216897505510133,
+      "relative_diff_median": -0.002280601851108066,
+      "verdict": "no significant difference"
+    },
+    {
+      "metric": "cached_token_share",
+      "pairs": 5,
+      "baseline_median": 0.37306284907235027,
+      "candidate_median": 0.3874430249727162,
+      "diff_median": 0.014380175900365944,
+      "ci_low": 0.014380175900365944,
+      "ci_high": 0.014380175900365944,
+      "relative_diff_median": 0.03854625550660798,
+      "verdict": "candidate higher"
+    },
+    {
+      "metric": "matched_ttft_diff_s",
+      "pairs": 5,
+      "baseline_median": 0.0,
+      "candidate_median": -0.0014395269972737879,
+      "diff_median": -0.0014395269972737879,
+      "ci_low": -0.014868361002299935,
+      "ci_high": 0.0054641224996885285,
+      "relative_diff_median": null,
+      "verdict": "no significant difference",
+      "note": "per pair: median over requests of candidate minus baseline TTFT"
+    }
+  ],
+  "warnings": []
+}
