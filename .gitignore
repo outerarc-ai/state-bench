@@ -10,3 +10,4 @@ dist/
 # Discussion artifacts from working sessions (ELI5 pages, scratch notes).
 eli5-*.html
 .trae-html-share-packages/
+.DS_Store
